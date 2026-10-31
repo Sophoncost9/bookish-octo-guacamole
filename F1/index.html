@@ -1,0 +1,353 @@
+<title>F1 Shop Drawing & Bar Cutting List</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@500;700&display=swap">
+<style>
+/* Layout: drafting sheet — title strip, then numbered sheet panels (drawings, bar list, cutting plan, 3D) on a paper ground */
+:root{
+  --bg:#eef0ed; --paper:#fbfcfa; --ink:#1d2622; --muted:#5d6a64; --line:#c9d0cb; --hatch:#9aa59f;
+  --accent:#b4441c; --accent-soft:#f4e3da; --concrete:#d9ddd8; --lean:#c4c8c2; --sand:#e8dcb8;
+  --b1:#c0392b; --b2:#1f63b5; --ring:#178a52; --dw:#7a3db3; --st:#c98a00;
+  --display:"Chakra Petch","IBM Plex Sans Thai",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121715; --paper:#1a211e; --ink:#e3e9e5; --muted:#9aa8a1; --line:#34403b; --hatch:#5c6a63;
+  --accent:#ff8a5c; --accent-soft:#3a2419; --concrete:#3a433f; --lean:#2f3633; --sand:#4a4330;
+  --b1:#ff6b5a; --b2:#5aa2ff; --ring:#3fd08a; --dw:#c18cff; --st:#f0b93a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715; --paper:#1a211e; --ink:#e3e9e5; --muted:#9aa8a1; --line:#34403b; --hatch:#5c6a63;
+  --accent:#ff8a5c; --accent-soft:#3a2419; --concrete:#3a433f; --lean:#2f3633; --sand:#4a4330;
+  --b1:#ff6b5a; --b2:#5aa2ff; --ring:#3fd08a; --dw:#c18cff; --st:#f0b93a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+header.title{display:grid;grid-template-columns:1fr auto;gap:12px 24px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:12px}
+header h1{font-family:var(--display);font-size:clamp(26px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted)}
+.tb{font-family:var(--mono);font-size:12px;display:grid;grid-template-columns:auto auto;gap:2px 12px;border:1px solid var(--ink);padding:8px 10px;background:var(--paper)}
+.tb b{font-weight:600}
+@media (max-width:640px){header.title{grid-template-columns:1fr}}
+.sheet{background:var(--paper);border:1px solid var(--line);padding:18px;display:grid;gap:14px;min-width:0}
+.sheet h2{font-family:var(--display);font-size:20px;margin:0;display:flex;gap:10px;align-items:baseline}
+.sheet h2 .no{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+figure{margin:0;min-width:0;display:grid;gap:6px}
+figcaption{font-family:var(--display);font-weight:700;font-size:14px;text-align:center;letter-spacing:.03em}
+.drw{width:100%;height:auto;display:block}
+.drw text{font-family:var(--mono);fill:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.sw{width:22px;height:4px;border-radius:2px;display:inline-block}
+.notes{font-size:13.5px;color:var(--ink);margin:0;padding-left:20px;display:grid;gap:3px;max-width:80ch}
+.notes .warn{color:var(--accent);font-weight:600}
+.ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.ctrl label{font-weight:500}
+.ctrl input[type=number]{width:90px;font:600 18px var(--mono);padding:6px 8px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:0}
+.ctrl input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;vertical-align:middle}
+th{background:var(--accent-soft);font-weight:700;font-size:12.5px}
+td.l{text-align:left}
+tfoot td{font-weight:700;background:var(--accent-soft)}
+.mark{font:700 15px var(--mono);display:inline-flex;align-items:center;gap:6px}
+.mark i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.shape{width:150px;height:62px;display:block;margin:auto}
+.shape text{font-family:var(--mono);font-size:11px;fill:var(--ink)}
+.pill{font-size:11px;font-weight:700;padding:1px 6px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:12.5px}
+.bar .lbl{font-family:var(--mono)}
+.track{display:flex;height:26px;border:1.5px solid var(--ink);background:repeating-linear-gradient(45deg,transparent 0 4px,var(--line) 4px 5px);min-width:0}
+.seg{display:flex;align-items:center;justify-content:center;font:600 10.5px var(--mono);color:#fff;border-right:1.5px solid var(--paper);overflow:hidden;white-space:nowrap}
+@media (max-width:560px){.bar{grid-template-columns:1fr}}
+#v3d{position:relative;height:min(70vh,560px);border:1px solid var(--line);background:var(--bg);min-width:0}
+#v3d canvas{display:block;width:100%;height:100%}
+#info{position:absolute;left:10px;bottom:10px;background:var(--paper);border:1px solid var(--ink);padding:6px 10px;font-size:13px;max-width:calc(100% - 20px)}
+.tog{display:flex;flex-wrap:wrap;gap:8px}
+.tog button{font:500 13px var(--body);padding:5px 10px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tog button[aria-pressed="false"]{opacity:.45;text-decoration:line-through}
+.qty td:first-child{text-align:left}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="title">
+  <div>
+    <h1>ฐานราก F1 · Shop Drawing &amp; Bar Cutting List</h1>
+    <p>ฐานแผ่ 1.00 × 1.00 × 0.25 ม. · เสาตอม่อ 0.20 × 0.20 ม. · ลึกจากระดับดิน 1.00 ม. · ใช้สำหรับช่างตัด-ดัดเหล็ก</p>
+  </div>
+  <div class="tb">
+    <span>DWG</span><b>STR-F1-SD01</b>
+    <span>หน่วย</span><b>มม. (ระบุเป็น ม.)</b>
+    <span>อ้างอิง</span><b>แบบขยายฐานราก F1</b>
+    <span>REV</span><b>0 · 31/10/2026</b>
+  </div>
+</header>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 1</span>แบบขยายเหล็กเสริม (Shop Drawing)</h2>
+  <div class="legend" id="legend"></div>
+  <div class="grid2">
+    <figure><svg class="drw" id="plan" viewBox="0 0 460 470" role="img" aria-label="แปลนเหล็กเสริมฐานราก F1"></svg><figcaption>แปลนเหล็กเสริมฐานราก F1 · 1:20</figcaption></figure>
+    <figure><svg class="drw" id="sect" viewBox="0 0 560 600" role="img" aria-label="รูปตัด A-A ฐานราก F1"></svg><figcaption>รูปตัด A-A · 1:20</figcaption></figure>
+  </div>
+  <ol class="notes">
+    <li>ระยะหุ้มคอนกรีตฐานราก 50 มม. (ด้านล่างวางบนคอนกรีตหยาบ 50 มม. + ทรายบดอัด 100 มม.) · ระยะหุ้มเสา 25 มม.</li>
+    <li>B1 = เหล็กล่างชั้นที่ 1 (แนว X) วางก่อน · B2 = ชั้นที่ 2 (แนว Y) วางทับ B1 · ปลายทั้งสองข้างงอขึ้น 90° ระยะ 12d ขึ้นไป</li>
+    <li>RB9 รัดรอบ วางด้านในขาตั้งของ B1/B2 ที่ระดับ +0.18 จากท้องฐาน ผูกทุกจุดตัด · ทาบต่อ 40d = 360 มม.</li>
+    <li>ความยาวตัด = ผลรวมระยะภายนอก − หักการดัด 2d ต่อมุม 90° แล้วปัดขึ้นเป็นทุก 10 มม.</li>
+    <li class="warn">เหล็กเสา C1 (4-DB12, ปลอก RB6@0.15) และชั้นคุณภาพ SD40/SR24 ไม่ได้ระบุในแบบ F1 — ใช้เป็นค่าสมมติฐาน ต้องตรวจกับตารางเสาและรายการประกอบแบบก่อนตัดจริง</li>
+  </ol>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 2</span>Bar Cutting List (BBS)</h2>
+  <div class="ctrl">
+    <label for="nf">จำนวนฐาน F1 ที่ต้องทำ</label>
+    <input id="nf" type="number" min="1" max="500" value="1">
+    <span class="sub">ตัวเลขทุกตารางคำนวณใหม่ตามจำนวนฐาน · เหล็กเส้นยาวมาตรฐาน 10 ม.</span>
+  </div>
+  <div class="scroll"><table id="bbs"></table></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 3</span>แผนตัดเหล็กเส้น 10 ม. (Cutting Plan)</h2>
+  <p class="sub">ช่างตัดตามรูปแบบการตัด (Pattern) ต่อเส้น ส่วนที่เหลือเก็บไว้ใช้งานอื่น</p>
+  <div class="scroll"><table id="cut"></table></div>
+  <div class="bars" id="cutbars"></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 4</span>โมเดล 3 มิติ</h2>
+  <p class="sub">ลากเพื่อหมุน · ล้อเมาส์/สองนิ้วเพื่อซูม · แตะเหล็กเพื่อดูรายละเอียด</p>
+  <div class="tog" id="tog"></div>
+  <div id="v3d"><div id="info">แตะเหล็กเส้นใดก็ได้เพื่อดู Mark และความยาวตัด</div></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 5</span>ปริมาณงานอื่นต่อฐาน</h2>
+  <div class="scroll"><table class="qty" id="qty"></table></div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ---------- design data (mm) ----------
+const W={DB12:0.888,RB9:0.499,RB6:0.222};
+const STOCK=10000;
+const BARS=[
+ {m:'B1',d:'DB12',g:'SD40*',n:10,shape:'U',dims:{A:150,B:900,C:150},cut:1160,c:'--b1',desc:'เหล็กล่างชั้นที่ 1 แนว X @0.094',per:8},
+ {m:'B2',d:'DB12',g:'SD40*',n:10,shape:'U',dims:{A:140,B:900,C:140},cut:1140,c:'--b2',desc:'เหล็กล่างชั้นที่ 2 แนว Y @0.094 วางบน B1',per:8},
+ {m:'R1',d:'RB9', g:'SR24*',n:1, shape:'O',dims:{A:870,B:870,L:360},cut:3800,c:'--ring',desc:'เหล็กรัดรอบ วางในขาตั้ง B1/B2',per:2},
+ {m:'C1',d:'DB12',g:'SD40*',n:4, shape:'L',dims:{A:1430,B:250},cut:1660,c:'--dw',desc:'เหล็กยืนเสา งอฉากขาเท้า (สมมติฐาน)',per:6,asm:1},
+ {m:'S1',d:'RB6', g:'SR24*',n:7, shape:'S',dims:{A:150,B:150,H:75},cut:730,c:'--st',desc:'ปลอกเสา @0.15 (สมมติฐาน)',per:13,asm:1},
+];
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f2=x=>x.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const NS='http://www.w3.org/2000/svg';
+function el(p,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+
+document.getElementById('legend').innerHTML=BARS.map(b=>`<span><i class="sw" style="background:var(${b.c})"></i><b>${b.m}</b> ${b.n}-${b.d}</span>`).join('');
+
+// ---------- dimension helper ----------
+function dimH(g,x1,x2,y,label,ext){
+  const s={stroke:'var(--ink)','stroke-width':.8};
+  el(g,'line',{x1,y1:y,x2,y2:y,...s});
+  for(const x of[x1,x2]){el(g,'line',{x1:x,y1:y-ext,x2:x,y2:y+4,...s});el(g,'line',{x1:x-4,y1:y+4,x2:x+4,y2:y-4,...s,'stroke-width':1.4})}
+  el(g,'text',{x:(x1+x2)/2,y:y-4,'text-anchor':'middle','font-size':11},label);
+}
+function dimV(g,y1,y2,x,label,ext){
+  const s={stroke:'var(--ink)','stroke-width':.8};
+  el(g,'line',{x1:x,y1,x2:x,y2,...s});
+  for(const y of[y1,y2]){el(g,'line',{x1:x-4,y1:y,x2:x+ext,y2:y,...s});el(g,'line',{x1:x-4,y1:y+4,x2:x+4,y2:y-4,...s,'stroke-width':1.4})}
+  const t=el(g,'text',{x:x-5,y:(y1+y2)/2,'text-anchor':'middle','font-size':11,transform:`rotate(-90 ${x-5} ${(y1+y2)/2})`},label);
+}
+function leader(g,x1,y1,x2,y2,txt,col){
+  el(g,'line',{x1,y1,x2,y2,stroke:'var(--ink)','stroke-width':.7});
+  el(g,'circle',{cx:x1,cy:y1,r:2.2,fill:'var(--ink)'});
+  el(g,'text',{x:x2+3,y:y2+4,'font-size':11,'font-weight':600,fill:`var(${col})`},txt);
+}
+
+// ---------- PLAN (scale 0.3 px/mm) ----------
+(function(){
+  const g=document.getElementById('plan'),s=.3,ox=70,oy=80,X=v=>ox+(v+500)*s,Y=v=>oy+(500-v)*s;
+  el(g,'rect',{x:X(-500),y:Y(500),width:300,height:300,fill:'var(--concrete)','fill-opacity':.45,stroke:'var(--ink)','stroke-width':1.6});
+  el(g,'line',{x1:X(0),y1:Y(560),x2:X(0),y2:Y(-560),stroke:'var(--muted)','stroke-dasharray':'10 3 2 3','stroke-width':.7});
+  el(g,'line',{x1:X(-560),y1:Y(0),x2:X(560),y2:Y(0),stroke:'var(--muted)','stroke-dasharray':'10 3 2 3','stroke-width':.7});
+  const pos=[];for(let i=0;i<10;i++)pos.push(-425+i*850/9);
+  // B1 along X
+  pos.forEach(p=>el(g,'line',{x1:X(-444),y1:Y(p),x2:X(444),y2:Y(p),stroke:'var(--b1)','stroke-width':2}));
+  pos.forEach(p=>el(g,'line',{x1:X(p),y1:Y(-444),x2:X(p),y2:Y(444),stroke:'var(--b2)','stroke-width':2}));
+  // hook dots
+  pos.forEach(p=>{for(const e of[-444,444]){el(g,'circle',{cx:X(e),cy:Y(p),r:2.4,fill:'var(--b1)'});el(g,'circle',{cx:X(p),cy:Y(e),r:2.4,fill:'var(--b2)'})}});
+  // ring
+  el(g,'rect',{x:X(-430),y:Y(430),width:860*s,height:860*s,fill:'none',stroke:'var(--ring)','stroke-width':1.8,'stroke-dasharray':'7 3'});
+  // column
+  el(g,'rect',{x:X(-100),y:Y(100),width:60,height:60,fill:'var(--paper)',stroke:'var(--ink)','stroke-width':1.6});
+  el(g,'rect',{x:X(-75),y:Y(75),width:45,height:45,fill:'none',stroke:'var(--st)','stroke-width':1.5});
+  for(const a of[-63,63])for(const b of[-63,63])el(g,'circle',{cx:X(a),cy:Y(b),r:3.2,fill:'var(--dw)'});
+  dimH(g,X(-500),X(500),36,'1000',10);dimH(g,X(-500),X(0),56,'500',6);dimH(g,X(0),X(500),56,'500',6);
+  dimV(g,Y(500),Y(-500),30,'1000',10);dimV(g,Y(500),Y(0),50,'500',6);dimV(g,Y(0),Y(-500),50,'500',6);
+  // section mark
+  for(const x of[X(-560),X(560)]){el(g,'circle',{cx:x,cy:Y(-200),r:9,fill:'var(--paper)',stroke:'var(--accent)','stroke-width':1.4});el(g,'text',{x,y:Y(-200)+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'var(--accent)'},'A')}
+  el(g,'line',{x1:X(-551),y1:Y(-200),x2:X(-470),y2:Y(-200),stroke:'var(--accent)','stroke-width':1.4});
+  el(g,'line',{x1:X(470),y1:Y(-200),x2:X(551),y2:Y(-200),stroke:'var(--accent)','stroke-width':1.4});
+  leader(g,X(250),Y(-331),X(380)+30,Y(-470)+40,'B1 10-DB12','--b1');
+  leader(g,X(331),Y(250),X(560)-6,Y(300),'B2 10-DB12','--b2');
+  leader(g,X(-430),Y(-380),X(-470),Y(-548),'R1 RB9 รัดรอบ','--ring');
+  leader(g,X(63),Y(63),X(200),Y(200),'C1 4-DB12 / S1 RB6@0.15','--dw');
+  el(g,'text',{x:X(-500),y:452,'font-size':10.5,fill:'var(--muted)'},'ระยะเรียง 850/9 = 94 มม. · เส้นแรกห่างขอบ 75 มม.');
+})();
+
+// ---------- SECTION (scale 0.3) ----------
+(function(){
+  const g=document.getElementById('sect'),s=.3,ox=95,base=500,X=v=>ox+(v+500)*s,Z=v=>base-v*s;
+  // sand & lean
+  el(g,'rect',{x:X(-500),y:Z(-50),width:300,height:30,fill:'var(--sand)',stroke:'var(--ink)','stroke-width':.8});
+  for(let i=0;i<60;i++)el(g,'circle',{cx:X(-490+((i*137)%980)),cy:Z(-60-((i*53)%85)),r:.9,fill:'var(--hatch)'});
+  el(g,'rect',{x:X(-500),y:Z(0),width:300,height:15,fill:'var(--lean)',stroke:'var(--ink)','stroke-width':.8});
+  // footing & column
+  el(g,'path',{d:`M${X(-500)} ${Z(0)}H${X(500)}V${Z(250)}H${X(100)}V${Z(1130)}H${X(-100)}V${Z(250)}H${X(-500)}Z`,fill:'var(--concrete)','fill-opacity':.5,stroke:'var(--ink)','stroke-width':1.6});
+  // break line
+  el(g,'path',{d:`M${X(-140)} ${Z(1130)}H${X(-10)}l6 -10 l8 20 l6 -10H${X(140)}`,fill:'none',stroke:'var(--ink)','stroke-width':1});
+  // ground
+  el(g,'line',{x1:X(-640),y1:Z(1000),x2:X(-100),y2:Z(1000),stroke:'var(--ink)','stroke-width':1.2});
+  el(g,'line',{x1:X(100),y1:Z(1000),x2:X(640),y2:Z(1000),stroke:'var(--ink)','stroke-width':1.2});
+  for(let x=-630;x<-110;x+=40)el(g,'line',{x1:X(x),y1:Z(1000),x2:X(x+25),y2:Z(1000)+8,stroke:'var(--hatch)'});
+  for(let x=110;x<630;x+=40)el(g,'line',{x1:X(x),y1:Z(1000),x2:X(x+25),y2:Z(1000)+8,stroke:'var(--hatch)'});
+  el(g,'path',{d:`M${X(300)} ${Z(1000)-14}l-6 -10h12z`,fill:'none',stroke:'var(--ink)'});
+  el(g,'text',{x:X(330),y:Z(1000)-16,'font-size':11},'±0.00 ระดับดิน');
+  // B1 (cut along X -> shows as U), B2 as dots
+  el(g,'path',{d:`M${X(-444)} ${Z(200)}V${Z(56)}H${X(444)}V${Z(200)}`,fill:'none',stroke:'var(--b1)','stroke-width':2.4});
+  for(let i=0;i<10;i++)el(g,'circle',{cx:X(-425+i*850/9),cy:Z(74),r:2.3,fill:'var(--b2)'});
+  // ring dots
+  for(const x of[-430,430])el(g,'circle',{cx:X(x),cy:Z(180),r:2.2,fill:'none',stroke:'var(--ring)','stroke-width':1.6});
+  // column bars
+  for(const sgn of[-1,1]){const x=63*sgn;el(g,'path',{d:`M${X(x)} ${Z(1130)}V${Z(86)}H${X(x+sgn*250)}`,fill:'none',stroke:'var(--dw)','stroke-width':2.4})}
+  for(const z of[200,300,450,600,750,900,1050])el(g,'line',{x1:X(-75),y1:Z(z),x2:X(75),y2:Z(z),stroke:'var(--st)','stroke-width':1.8});
+  dimV(g,Z(1000),Z(0),35,'1000',10);dimV(g,Z(1000),Z(250),58,'750',8);dimV(g,Z(250),Z(0),58,'250',8);
+  dimH(g,X(-500),X(500),Z(-150)+30,'1000',10);dimH(g,X(-500),X(0),Z(-150)+48,'500',6);dimH(g,X(0),X(500),Z(-150)+48,'500',6);
+  dimH(g,X(-100),X(100),Z(1130)-14,'200',6);
+  // cover tags
+  el(g,'text',{x:X(-490),y:Z(15),'font-size':9,fill:'var(--muted)'},'cover 50');
+  leader(g,X(250),Z(56),X(560),Z(310),'B1 10-DB12 (U)','--b1');
+  leader(g,X(331),Z(74),X(560),Z(270),'B2 10-DB12','--b2');
+  leader(g,X(430),Z(180),X(560),Z(350),'R1 RB9 รัดรอบ','--ring');
+  leader(g,X(63),Z(700),X(250),Z(740),'C1 4-DB12','--dw');
+  leader(g,X(75),Z(600),X(250),Z(560),'S1 RB6@0.15','--st');
+  leader(g,X(400),Z(-25),X(560),Z(-25),'คอนกรีตหยาบ 50','--muted');
+  leader(g,X(400),Z(-100),X(560),Z(-100),'ทรายบดอัด 100','--muted');
+  el(g,'text',{x:X(-500),y:16,'font-size':10.5,fill:'var(--muted)'},'C1 ยื่นเหนือดิน +0.50 เพื่อทาบเหล็กเสา (40d)');
+})();
+
+// ---------- shape icons ----------
+function shapeSVG(b){
+  const col=`var(${b.c})`,d=b.dims;let s=`<svg class="shape" viewBox="0 0 150 62">`;
+  const st=`fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round"`;
+  if(b.shape==='U')s+=`<path d="M20 10V48H130V10" ${st}/><text x="75" y="60" text-anchor="middle">B=${d.B}</text><text x="4" y="32">A=${d.A}</text><text x="133" y="32">${d.C}</text>`;
+  if(b.shape==='L')s+=`<path d="M40 6V48H110" ${st}/><text x="44" y="28">A=${d.A}</text><text x="75" y="60" text-anchor="middle">B=${d.B}</text>`;
+  if(b.shape==='O')s+=`<rect x="45" y="8" width="60" height="44" ${st}/><path d="M45 8h18" stroke="${col}" stroke-width="6"/><text x="75" y="34" text-anchor="middle">${d.A}×${d.B}</text><text x="108" y="14">ทาบ ${d.L}</text>`;
+  if(b.shape==='S')s+=`<rect x="52" y="10" width="44" height="42" ${st}/><path d="M52 10l14 14M58 10l14 14" stroke="${col}" stroke-width="2.4"/><text x="74" y="35" text-anchor="middle">${d.A}×${d.B}</text><text x="100" y="20">135°</text>`;
+  return s+'</svg>';
+}
+
+// ---------- BBS / cutting plan ----------
+function render(){
+  const N=Math.max(1,Math.min(500,parseInt(document.getElementById('nf').value)||1));
+  let tw=0,rows='';
+  const byDia={};
+  BARS.forEach(b=>{
+    const pcs=b.n*N,len=pcs*b.cut/1000,kg=len*W[b.d];tw+=kg;
+    byDia[b.d]=(byDia[b.d]||0)+kg;
+    const dd=Object.entries(b.dims).map(([k,v])=>`${k}=${v}`).join('<br>');
+    rows+=`<tr><td><span class="mark"><i style="background:var(${b.c})"></i>${b.m}</span></td><td>${b.d}<br><small>${b.g}</small></td><td>${shapeSVG(b)}</td><td>${dd}</td><td><b>${(b.cut/1000).toFixed(2)}</b></td><td>${b.n}</td><td><b>${pcs}</b></td><td>${f2(len)}</td><td>${W[b.d].toFixed(3)}</td><td>${f2(kg)}</td><td class="l">${b.desc}${b.asm?' <span class="pill">ตรวจตารางเสา</span>':''}</td></tr>`;
+  });
+  document.getElementById('bbs').innerHTML=`<thead><tr><th>Mark</th><th>ขนาด</th><th>รูปการดัด (มม.)</th><th>ระยะ (มม.)</th><th>ยาวตัด<br>(ม./ท่อน)</th><th>ท่อน/ฐาน</th><th>รวม (ท่อน)<br>× ${N} ฐาน</th><th>ยาวรวม (ม.)</th><th>กก./ม.</th><th>น้ำหนัก (กก.)</th><th>หมายเหตุ</th></tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr><td colspan="9" style="text-align:right">${Object.entries(byDia).map(([d,k])=>`${d} ${f2(k)} กก.`).join(' · ')} · น้ำหนักรวม</td><td>${f2(tw)}</td><td class="l">* ชั้นคุณภาพเป็นค่าสมมติฐาน</td></tr></tfoot>`;
+
+  // cutting plan
+  let cr='',bars='',stock={};
+  BARS.forEach(b=>{
+    const pcs=b.n*N,nb=Math.ceil(pcs/b.per),full=Math.floor(pcs/b.per),rem=pcs-full*b.per;
+    const waste=(STOCK-b.per*b.cut)/1000;
+    stock[b.d]=(stock[b.d]||0)+nb;
+    cr+=`<tr><td><span class="mark"><i style="background:var(${b.c})"></i>${b.m}</span></td><td>${b.d}</td><td>${(b.cut/1000).toFixed(2)}</td><td>${pcs}</td><td>${b.per} ท่อน/เส้น<br><small>เศษ ${waste.toFixed(2)} ม.</small></td><td><b>${nb}</b></td><td class="l">${[full?`${full} เส้น × ${b.per} ท่อน`:'',rem?`1 เส้น × ${rem} ท่อน (เศษ ${((STOCK-rem*b.cut)/1000).toFixed(2)} ม.)`:''].filter(Boolean).join(' + ')}</td></tr>`;
+    const segs=Array.from({length:b.per},()=>`<div class="seg" style="width:${b.cut/STOCK*100}%;background:var(${b.c})">${(b.cut/1000).toFixed(2)}</div>`).join('');
+    bars+=`<div class="bar"><div class="lbl"><b>${b.m}</b> ${b.d} · Pattern ×${nb} เส้น</div><div class="track">${segs}</div></div>`;
+  });
+  cr+=`<tr><td colspan="5" style="text-align:right"><b>สั่งเหล็กเส้น 10 ม.</b></td><td colspan="2" class="l"><b>${Object.entries(stock).map(([d,n])=>`${d} = ${n} เส้น`).join(' · ')}</b></td></tr>`;
+  document.getElementById('cut').innerHTML=`<thead><tr><th>Mark</th><th>ขนาด</th><th>ยาวตัด (ม.)</th><th>จำนวนท่อน</th><th>รูปแบบตัดต่อเส้น 10 ม.</th><th>ใช้ (เส้น)</th><th>วิธีตัด</th></tr></thead><tbody>${cr}</tbody>`;
+  document.getElementById('cutbars').innerHTML=bars;
+
+  const c=1*1*.25,col=.2*.2*.75;
+  document.getElementById('qty').innerHTML=`<thead><tr><th>รายการ</th><th>สูตร</th><th>ต่อฐาน</th><th>× ${N} ฐาน</th><th>หน่วย</th></tr></thead><tbody>
+  <tr><td>ขุดดิน (เผื่อข้างละ 0.30 ม.)</td><td>1.60×1.60×1.15</td><td>2.94</td><td>${f2(2.944*N)}</td><td>ลบ.ม.</td></tr>
+  <tr><td>ทรายหยาบบดอัด 10 ซม.</td><td>1.00×1.00×0.10</td><td>0.10</td><td>${f2(.1*N)}</td><td>ลบ.ม.</td></tr>
+  <tr><td>คอนกรีตหยาบ 5 ซม.</td><td>1.00×1.00×0.05</td><td>0.05</td><td>${f2(.05*N)}</td><td>ลบ.ม.</td></tr>
+  <tr><td>คอนกรีตโครงสร้าง ฐานราก</td><td>1.00×1.00×0.25</td><td>0.25</td><td>${f2(c*N)}</td><td>ลบ.ม.</td></tr>
+  <tr><td>คอนกรีตโครงสร้าง ตอม่อ</td><td>0.20×0.20×0.75</td><td>0.03</td><td>${f2(col*N)}</td><td>ลบ.ม.</td></tr>
+  <tr><td>แบบหล่อ ข้างฐาน + ตอม่อ</td><td>4×1.00×0.25 + 4×0.20×0.75</td><td>1.60</td><td>${f2(1.6*N)}</td><td>ตร.ม.</td></tr>
+  <tr><td>ลวดผูกเหล็ก (≈1.5% น้ำหนักเหล็ก)</td><td>${f2(tw/N)}×0.015</td><td>${f2(tw/N*.015)}</td><td>${f2(tw*.015)}</td><td>กก.</td></tr></tbody>`;
+}
+document.getElementById('nf').addEventListener('input',render);
+render();
+
+// ---------- 3D ----------
+(function(){
+  if(!window.THREE){document.getElementById('info').textContent='โหลดไลบรารี 3 มิติไม่สำเร็จ';return}
+  const box=document.getElementById('v3d'),scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(40,1,.01,50);cam.position.set(1.7,1.5,2.0);
+  const ren=new THREE.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));box.prepend(ren.domElement);
+  const ctl=new THREE.OrbitControls(cam,ren.domElement);ctl.target.set(0,.45,0);ctl.enableDamping=true;
+  scene.add(new THREE.HemisphereLight(0xffffff,0x667766,.85));const dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(2,3,1.5);scene.add(dl);
+  const groups={};const grp=k=>groups[k]||(groups[k]=(scene.add(new THREE.Group()),scene.children[scene.children.length-1]));
+  const C=v=>new THREE.Color(css(v)||'#888');
+  const mats=[];function mat(v,o){const m=new THREE.MeshStandardMaterial({color:C(v),roughness:.6,metalness:o==null?.3:0,transparent:o!=null,opacity:o==null?1:o,depthWrite:o==null});m.userData.v=v;mats.push(m);return m}
+  const P=(x,y,z)=>new THREE.Vector3(x/1000,z/1000,-y/1000); // mm (x,y,z-up) -> three
+  function bar(pts,dia,v,info,g){
+    const path=new THREE.CurvePath(),r=dia*2.5;
+    let cur=pts[0];
+    for(let i=1;i<pts.length;i++){
+      const p=pts[i];
+      if(i<pts.length-1){
+        const a=p.clone().sub(cur).normalize(),b=pts[i+1].clone().sub(p).normalize(),rr=r/1000;
+        const p1=p.clone().addScaledVector(a,-rr),p2=p.clone().addScaledVector(b,rr);
+        path.add(new THREE.LineCurve3(cur,p1));path.add(new THREE.QuadraticBezierCurve3(p1,p,p2));cur=p2;
+      }else path.add(new THREE.LineCurve3(cur,p));
+    }
+    const m=new THREE.Mesh(new THREE.TubeGeometry(path,pts.length*24,dia/2000,8,false),mat(v));m.userData.info=info;grp(g).add(m);
+  }
+  const pos=[];for(let i=0;i<10;i++)pos.push(-425+i*850/9);
+  const inf=b=>`<b>${b.m}</b> ${b.n}-${b.d} · ยาวตัด ${(b.cut/1000).toFixed(2)} ม. · ${b.desc}`;
+  pos.forEach(y=>bar([P(-444,y,200),P(-444,y,56),P(444,y,56),P(444,y,200)],12,'--b1',inf(BARS[0]),'B1'));
+  pos.forEach(x=>bar([P(x,-438,202),P(x,-438,68),P(x,438,68),P(x,438,202)],12,'--b2',inf(BARS[1]),'B2'));
+  const q=430;bar([P(-q+180,-q,180),P(q,-q,180),P(q,q,180),P(-q,q,180),P(-q,-q,189),P(-q+540,-q,189)],9,'--ring',inf(BARS[2]),'R1');
+  for(const a of[-63,63])for(const b of[-63,63]){const sx=Math.sign(a);bar([P(a,b,1500),P(a,b,86),P(a+sx*250,b,86)],12,'--dw',inf(BARS[3]),'C1')}
+  for(const z of[200,300,450,600,750,900,1050]){const h=69;bar([P(-h+40,-h,z),P(-h,-h+40,z),P(-h,-h,z),P(h,-h,z),P(h,h,z),P(-h,h,z),P(-h,-h,z),P(-h+40,-h+40,z)],6,'--st',inf(BARS[4]),'S1')}
+  // concrete & layers
+  const boxM=(w,h,d,v,o,y,g)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(v,o));m.position.y=y;grp(g).add(m);return m};
+  const foot=boxM(1,.25,1,'--concrete',.28,.125,'CON');const colm=boxM(.2,.75,.2,'--concrete',.28,.625,'CON');
+  [foot,colm].forEach(m=>{const e=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:C('--ink')}));e.userData.v='--ink';m.add(e)});
+  boxM(1,.05,1,'--lean',1,-.025,'BASE');boxM(1,.1,1,'--sand',1,-.1,'BASE');
+  const gnd=new THREE.Mesh(new THREE.PlaneGeometry(2.4,2.4),mat('--hatch',.18));gnd.rotation.x=-Math.PI/2;gnd.position.y=1;grp('GND').add(gnd);
+  // toggles
+  const T=[['CON','คอนกรีต','--concrete'],['B1','B1','--b1'],['B2','B2','--b2'],['R1','R1 รัดรอบ','--ring'],['C1','C1 เหล็กเสา','--dw'],['S1','S1 ปลอก','--st'],['BASE','ทราย/คอนกรีตหยาบ','--sand'],['GND','ระดับดิน','--hatch']];
+  document.getElementById('tog').innerHTML=T.map(([k,l,c])=>`<button id="t-${k}" aria-pressed="true" data-k="${k}"><i class="sw" style="background:var(${c})"></i>${l}</button>`).join('');
+  document.getElementById('tog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);groups[b.dataset.k].visible=on});
+  // pick
+  const rc=new THREE.Raycaster(),mv=new THREE.Vector2();let down;
+  ren.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+  ren.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const r=ren.domElement.getBoundingClientRect();mv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);rc.setFromCamera(mv,cam);
+    const hit=rc.intersectObjects(scene.children,true).find(h=>h.object.userData.info&&h.object.parent.visible);document.getElementById('info').innerHTML=hit?hit.object.userData.info:'แตะเหล็กเส้นใดก็ได้เพื่อดู Mark และความยาวตัด'});
+  function theme(){scene.background=C('--bg');mats.forEach(m=>m.color=C(m.userData.v))}
+  theme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',theme);new MutationObserver(theme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  function size(){const w=box.clientWidth,h=box.clientHeight;ren.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+  new ResizeObserver(size).observe(box);size();
+  (function loop(){requestAnimationFrame(loop);ctl.update();ren.render(scene,cam)})();
+})();
+</script>
