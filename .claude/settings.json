@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "sophon-office": {
+      "source": {
+        "source": "github",
+        "repo": "sophoncost9/bookish-octo-guacamole"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "sophon-office-team@sophon-office": true
+  }
+}
