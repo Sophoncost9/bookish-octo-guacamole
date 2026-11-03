@@ -1,0 +1,17 @@
+{
+  "name": "sophon-office",
+  "owner": {
+    "name": "Sophon (PHISO)",
+    "email": "sophon2522era@gmail.com"
+  },
+  "metadata": {
+    "description": "ทีม AI Agent สำนักงานพี่โสภณ งานถอดแบบ ประมาณราคา BOQ วางแผนงานก่อสร้าง"
+  },
+  "plugins": [
+    {
+      "name": "sophon-office-team",
+      "source": "./",
+      "description": "ทีม AI Agent สำนักงานพี่โสภณ: เลขา → หัวหน้า → 6 ฝ่าย (โครงสร้าง สถาปัตย์ งานระบบ จัดซื้อ BOQ/Presentation วางแผน) พร้อมระบบประชุมแก้ปัญหา"
+    }
+  ]
+}
