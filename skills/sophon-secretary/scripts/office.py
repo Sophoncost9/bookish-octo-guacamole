@@ -5,7 +5,8 @@
   python office.py init   JOB "ชื่องาน"
   python office.py log    JOB <ฝ่าย> <สถานะ> "ข้อความ"
   python office.py status JOB
-สถานะที่ใช้: assigned, working, delivered, review_pass, review_fail, issue, meeting, resolved, reported
+สถานะที่ใช้: assigned, working, delivered, review_pass, review_fail, issue, meeting, resolved, reported,
+           awaiting_approval, approved, published, rejected
 """
 import datetime as dt
 import json
@@ -20,6 +21,9 @@ TEAMS = {
     "PUR": "ฝ่ายจัดซื้อ",
     "PLN": "ทีมวางแผนงานก่อสร้าง",
     "BOQ": "ทีม BOQ และ Presentation",
+    "CNT": "ทีม Content AI",
+    "TRN": "ทีมเนื้อหาการอบรม",
+    "DEV": "ทีมเขียนโปรแกรม",
     "SEC": "เลขา",
 }
 STATUS_TH = {
@@ -32,6 +36,10 @@ STATUS_TH = {
     "meeting": "กำลังประชุมแก้ปัญหา",
     "resolved": "แก้ปัญหาแล้ว",
     "reported": "รายงานพี่โสภณแล้ว",
+    "awaiting_approval": "รอพี่โสภณตรวจ/อนุมัติ",
+    "approved": "พี่โสภณอนุมัติแล้ว",
+    "published": "โพสต์/เผยแพร่แล้ว",
+    "rejected": "พี่โสภณไม่อนุมัติ",
 }
 
 
@@ -40,7 +48,7 @@ def now():
 
 
 def init(job: pathlib.Path, name: str):
-    for sub in ["in", "meetings", "reviews"] + [f"teams/{t}" for t in ["STR", "ARC", "MEP", "PUR", "PLN", "BOQ"]]:
+    for sub in ["in", "meetings", "reviews", "content", "training", "dev"] + [f"teams/{t}" for t in ["STR", "ARC", "MEP", "PUR", "PLN", "BOQ"]]:
         (job / sub).mkdir(parents=True, exist_ok=True)
     order = job / "00_order.md"
     if not order.exists():

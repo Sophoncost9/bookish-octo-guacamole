@@ -1,10 +1,25 @@
 {
   "name": "sophon-office-team",
-  "version": "1.0.0",
-  "description": "ทีม AI Agent สำนักงานพี่โสภณ: เลขา (ช่องทางเดียวที่รับคำสั่งและรายงานพี่โสภณ) → หัวหน้าทีม → วิศวกรโครงสร้าง, วิศวกรถอดแบบสถาปัตย์, วิศวกรถอดแบบงานระบบ (ไฟฟ้า ประปา แอร์), ฝ่ายจัดซื้อ (เช็คราคาวัสดุ), ทีม BOQ และเอกสาร Presentation, ทีมวางแผนงานก่อสร้าง — มีระบบประชุมแก้ปัญหาระหว่างทีมและรายงานผลผ่านเลขา",
+  "version": "1.1.0",
+  "description": "ทีม AI Agent สำนักงานพี่โสภณ: เลขา (ช่องทางเดียวที่รับคำสั่งและรายงานพี่โสภณ) → หัวหน้าทีม → วิศวกรโครงสร้าง, วิศวกรถอดแบบสถาปัตย์, วิศวกรถอดแบบงานระบบ, ฝ่ายจัดซื้อ, ทีม BOQ/Presentation, ทีมวางแผนงานก่อสร้าง — และทีมที่ขึ้นตรงกับเลขา: ทีม Content AI + กราฟฟิก (โพสต์ Facebook อัตโนมัติหลังพี่โสภณอนุมัติ), ทีมเนื้อหาการอบรม, ทีมเขียนโปรแกรมเว็บและ SketchUp Extension — มีระบบประชุมแก้ปัญหาระหว่างทีม",
   "author": {
     "name": "Sophon (PHISO)",
     "email": "sophon2522era@gmail.com"
   },
-  "keywords": ["construction", "BOQ", "quantity surveying", "takeoff", "procurement", "planning", "presentation", "agent team", "Thai"]
+  "keywords": [
+    "construction",
+    "BOQ",
+    "quantity surveying",
+    "takeoff",
+    "procurement",
+    "planning",
+    "presentation",
+    "agent team",
+    "Thai",
+    "facebook",
+    "content",
+    "training",
+    "web app",
+    "sketchup extension"
+  ]
 }
