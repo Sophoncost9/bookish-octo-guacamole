@@ -1,0 +1,28 @@
+{
+  "name": "F1",
+  "project": "",
+  "dwg": "STR-F1-SD01",
+  "ref": "แบบขยายฐานราก F1",
+  "rev": "0",
+  "date": "31/10/2026",
+  "count": 1,
+  "footing": {"B": 1000, "L": 1000, "t": 250, "depth": 1000},
+  "cover": 50,
+  "lean": 50,
+  "sand": 100,
+  "stock": 10000,
+  "grade": {"DB": "SD40", "RB": "SR24"},
+  "grade_assumed": true,
+  "bars": {
+    "x": {"n": 10, "type": "DB", "dia": 12},
+    "y": {"n": 10, "type": "DB", "dia": 12},
+    "ring": {"type": "RB", "dia": 9}
+  },
+  "column": {
+    "b": 200, "h": 200, "cover": 25,
+    "main": {"n": 4, "type": "DB", "dia": 12},
+    "tie": {"type": "RB", "dia": 6, "s": 150},
+    "above_ground": 500, "foot": 250,
+    "assumed": true
+  }
+}

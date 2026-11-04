@@ -1,0 +1,320 @@
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Chakra+Petch:wght@500;700&display=swap">
+<style>
+/* Layout: drafting sheet — title strip, then numbered sheet panels (drawings, bar list, cutting plan, 3D) on a paper ground */
+:root{
+  --bg:#eef0ed; --paper:#fbfcfa; --ink:#1d2622; --muted:#5d6a64; --line:#c9d0cb; --hatch:#9aa59f;
+  --accent:#b4441c; --accent-soft:#f4e3da; --concrete:#d9ddd8; --lean:#c4c8c2; --sand:#e8dcb8;
+  --b1:#c0392b; --b2:#1f63b5; --ring:#178a52; --dw:#7a3db3; --st:#c98a00;
+  --display:"Chakra Petch","IBM Plex Sans Thai",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121715; --paper:#1a211e; --ink:#e3e9e5; --muted:#9aa8a1; --line:#34403b; --hatch:#5c6a63;
+  --accent:#ff8a5c; --accent-soft:#3a2419; --concrete:#3a433f; --lean:#2f3633; --sand:#4a4330;
+  --b1:#ff6b5a; --b2:#5aa2ff; --ring:#3fd08a; --dw:#c18cff; --st:#f0b93a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715; --paper:#1a211e; --ink:#e3e9e5; --muted:#9aa8a1; --line:#34403b; --hatch:#5c6a63;
+  --accent:#ff8a5c; --accent-soft:#3a2419; --concrete:#3a433f; --lean:#2f3633; --sand:#4a4330;
+  --b1:#ff6b5a; --b2:#5aa2ff; --ring:#3fd08a; --dw:#c18cff; --st:#f0b93a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+header.title{display:grid;grid-template-columns:1fr auto;gap:12px 24px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:12px}
+header h1{font-family:var(--display);font-size:clamp(26px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted)}
+.tb{font-family:var(--mono);font-size:12px;display:grid;grid-template-columns:auto auto;gap:2px 12px;border:1px solid var(--ink);padding:8px 10px;background:var(--paper)}
+.tb b{font-weight:600}
+@media (max-width:640px){header.title{grid-template-columns:1fr}}
+.sheet{background:var(--paper);border:1px solid var(--line);padding:18px;display:grid;gap:14px;min-width:0}
+.sheet h2{font-family:var(--display);font-size:20px;margin:0;display:flex;gap:10px;align-items:baseline}
+.sheet h2 .no{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+figure{margin:0;min-width:0;display:grid;gap:6px}
+figcaption{font-family:var(--display);font-weight:700;font-size:14px;text-align:center;letter-spacing:.03em}
+.drw{width:100%;height:auto;display:block}
+.drw text{font-family:var(--mono);fill:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.sw{width:22px;height:4px;border-radius:2px;display:inline-block}
+.notes{font-size:13.5px;color:var(--ink);margin:0;padding-left:20px;display:grid;gap:3px;max-width:80ch}
+.notes .warn{color:var(--accent);font-weight:600}
+.ctrl{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.ctrl label{font-weight:500}
+.ctrl input[type=number]{width:90px;font:600 18px var(--mono);padding:6px 8px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:0}
+.ctrl input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:center;vertical-align:middle}
+th{background:var(--accent-soft);font-weight:700;font-size:12.5px}
+td.l{text-align:left}
+tfoot td{font-weight:700;background:var(--accent-soft)}
+.mark{font:700 15px var(--mono);display:inline-flex;align-items:center;gap:6px}
+.mark i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.shape{width:150px;height:62px;display:block;margin:auto}
+.shape text{font-family:var(--mono);font-size:11px;fill:var(--ink)}
+.pill{font-size:11px;font-weight:700;padding:1px 6px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;font-size:12.5px}
+.bar .lbl{font-family:var(--mono)}
+.track{display:flex;height:26px;border:1.5px solid var(--ink);background:repeating-linear-gradient(45deg,transparent 0 4px,var(--line) 4px 5px);min-width:0}
+.seg{display:flex;align-items:center;justify-content:center;font:600 10.5px var(--mono);color:#fff;border-right:1.5px solid var(--paper);overflow:hidden;white-space:nowrap}
+@media (max-width:560px){.bar{grid-template-columns:1fr}}
+#v3d{position:relative;height:min(70vh,560px);border:1px solid var(--line);background:var(--bg);min-width:0}
+#v3d canvas{display:block;width:100%;height:100%}
+#info{position:absolute;left:10px;bottom:10px;background:var(--paper);border:1px solid var(--ink);padding:6px 10px;font-size:13px;max-width:calc(100% - 20px)}
+.tog{display:flex;flex-wrap:wrap;gap:8px}
+.tog button{font:500 13px var(--body);padding:5px 10px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tog button[aria-pressed="false"]{opacity:.45;text-decoration:line-through}
+.qty td:first-child{text-align:left}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+<header class="title">
+  <div>
+    <h1 id="h1"></h1>
+    <p id="hsub"></p>
+  </div>
+  <div class="tb" id="tb"></div>
+</header>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 1</span>แบบขยายเหล็กเสริม (Shop Drawing)</h2>
+  <div class="legend" id="legend"></div>
+  <div class="grid2">
+    <figure><svg class="drw" id="plan" role="img" aria-label="แปลนเหล็กเสริมฐานราก"></svg><figcaption id="cap1"></figcaption></figure>
+    <figure><svg class="drw" id="sect" role="img" aria-label="รูปตัด A-A ฐานราก"></svg><figcaption>รูปตัด A-A</figcaption></figure>
+  </div>
+  <ol class="notes" id="notes"></ol>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 2</span>Bar Cutting List (BBS)</h2>
+  <div class="ctrl">
+    <label for="nf" id="nfl">จำนวนฐาน</label>
+    <input id="nf" type="number" min="1" max="500" value="1">
+    <span class="sub" id="nfs"></span>
+  </div>
+  <div class="scroll"><table id="bbs"></table></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 3</span>แผนตัดเหล็กเส้น (Cutting Plan)</h2>
+  <p class="sub">ช่างตัดตามรูปแบบการตัด (Pattern) ต่อเส้น ส่วนที่เหลือเก็บไว้ใช้งานอื่น</p>
+  <div class="scroll"><table id="cut"></table></div>
+  <div class="bars" id="cutbars"></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 4</span>โมเดล 3 มิติ</h2>
+  <p class="sub">ลากเพื่อหมุน · ล้อเมาส์/สองนิ้วเพื่อซูม · แตะเหล็กเพื่อดูรายละเอียด</p>
+  <div class="tog" id="tog"></div>
+  <div id="v3d"><div id="info">แตะเหล็กเส้นใดก็ได้เพื่อดู Mark และความยาวตัด</div></div>
+</section>
+
+<section class="sheet">
+  <h2><span class="no">SHEET 5</span>ปริมาณงานอื่นต่อฐาน</h2>
+  <div class="scroll"><table class="qty" id="qty"></table></div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const CALC=/*__CALC__*/null;
+const CFG=CALC.cfg,F=CFG.footing,COL=CFG.column||null,BARS=CALC.bars,STOCK=CALC.stock,CV=CALC.cover;
+const BY=Object.fromEntries(BARS.map(b=>[b.m,b]));
+const LEAN=CFG.lean??50,SAND=CFG.sand??100;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f2=x=>x.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const m2=x=>(x/1000).toFixed(2);
+const NS='http://www.w3.org/2000/svg';
+function el(p,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+const lab=b=>`${b.n}-${b.dia}`;
+
+// ---------- header / notes ----------
+document.getElementById('h1').innerHTML=`ฐานราก ${CFG.name} · Shop Drawing &amp; Bar Cutting List`;
+document.getElementById('hsub').textContent=`ฐานแผ่ ${m2(F.B)} × ${m2(F.L)} × ${m2(F.t)} ม.`+(COL?` · เสาตอม่อ ${m2(COL.b)} × ${m2(COL.h)} ม.`:'')+` · ลึกจากระดับดิน ${m2(F.depth)} ม. · ใช้สำหรับช่างตัด-ดัดเหล็ก`+(CFG.project?` · ${CFG.project}`:'');
+document.getElementById('tb').innerHTML=`<span>DWG</span><b>${CFG.dwg||'STR-'+CFG.name+'-SD01'}</b><span>หน่วย</span><b>มม. (ระบุเป็น ม.)</b><span>อ้างอิง</span><b>${CFG.ref||'แบบขยายฐานราก '+CFG.name}</b><span>REV</span><b>${CFG.rev||'0'} · ${CFG.date||''}</b>`;
+document.getElementById('cap1').textContent=`แปลนเหล็กเสริมฐานราก ${CFG.name}`;
+document.getElementById('nfl').textContent=`จำนวนฐาน ${CFG.name} ที่ต้องทำ`;
+document.getElementById('nfs').textContent=`ตัวเลขทุกตารางคำนวณใหม่ตามจำนวนฐาน · เหล็กเส้นยาวมาตรฐาน ${STOCK/1000} ม.`;
+document.getElementById('nf').value=CFG.count||1;
+{
+  const n=[`ระยะหุ้มคอนกรีตฐานราก ${CV} มม. (ด้านล่างวางบนคอนกรีตหยาบ ${LEAN} มม. + ทรายบดอัด ${SAND} มม.)`+(COL?` · ระยะหุ้มเสา ${COL.cover??25} มม.`:''),
+   `B1 = เหล็กล่างชั้นที่ 1 (แนว X) วางก่อน · B2 = ชั้นที่ 2 (แนว Y) วางทับ B1 · ปลายทั้งสองข้างงอขึ้น 90°`];
+  if(BY.R1)n.push(`R1 ${BY.R1.dia} รัดรอบ วางด้านในขาตั้งของ B1/B2 ที่ระดับ +${m2(BY.R1.z)} จากท้องฐาน ผูกทุกจุดตัด · ทาบต่อ ${BY.R1.dims.L} มม.`);
+  n.push('ความยาวตัด = ผลรวมระยะภายนอก − หักการดัด 2d ต่อมุม 90° แล้วปัดขึ้นเป็นทุก 10 มม.');
+  document.getElementById('notes').innerHTML=n.map(x=>`<li>${x}</li>`).join('')+CALC.warn.map(x=>`<li class="warn">${x}</li>`).join('');
+}
+document.getElementById('legend').innerHTML=BARS.map(b=>`<span><i class="sw" style="background:var(${b.c})"></i><b>${b.m}</b> ${lab(b)}</span>`).join('');
+
+// ---------- drawing helpers ----------
+function dimH(g,x1,x2,y,label,ext){const s={stroke:'var(--ink)','stroke-width':.8};el(g,'line',{x1,y1:y,x2,y2:y,...s});
+  for(const x of[x1,x2]){el(g,'line',{x1:x,y1:y-ext,x2:x,y2:y+4,...s});el(g,'line',{x1:x-4,y1:y+4,x2:x+4,y2:y-4,...s,'stroke-width':1.4})}
+  el(g,'text',{x:(x1+x2)/2,y:y-4,'text-anchor':'middle','font-size':11},label)}
+function dimV(g,y1,y2,x,label,ext){const s={stroke:'var(--ink)','stroke-width':.8};el(g,'line',{x1:x,y1,x2:x,y2,...s});
+  for(const y of[y1,y2]){el(g,'line',{x1:x-4,y1:y,x2:x+ext,y2:y,...s});el(g,'line',{x1:x-4,y1:y+4,x2:x+4,y2:y-4,...s,'stroke-width':1.4})}
+  el(g,'text',{x:x-5,y:(y1+y2)/2,'text-anchor':'middle','font-size':11,transform:`rotate(-90 ${x-5} ${(y1+y2)/2})`},label)}
+function leader(g,x1,y1,x2,y2,txt,col){el(g,'line',{x1,y1,x2,y2,stroke:'var(--ink)','stroke-width':.7});el(g,'circle',{cx:x1,cy:y1,r:2.2,fill:'var(--ink)'});
+  el(g,'text',{x:x2+3,y:y2+4,'font-size':11,'font-weight':600,fill:`var(${col})`},txt)}
+
+// ---------- PLAN ----------
+(function(){
+  const g=document.getElementById('plan'),s=300/Math.max(F.B,F.L),W=F.B*s,H=F.L*s,ox=70,oy=80;
+  g.setAttribute('viewBox',`0 0 ${ox+W+150} ${oy+H+90}`);
+  const X=v=>ox+(v+F.B/2)*s,Y=v=>oy+(F.L/2-v)*s,b1=BY.B1,b2=BY.B2,hx=F.B/2-CV-b1.d/2,hy=F.L/2-CV-b2.d/2;
+  el(g,'rect',{x:X(-F.B/2),y:Y(F.L/2),width:W,height:H,fill:'var(--concrete)','fill-opacity':.45,stroke:'var(--ink)','stroke-width':1.6});
+  el(g,'line',{x1:X(0),y1:Y(F.L/2)-18,x2:X(0),y2:Y(-F.L/2)+18,stroke:'var(--muted)','stroke-dasharray':'10 3 2 3','stroke-width':.7});
+  el(g,'line',{x1:X(-F.B/2)-18,y1:Y(0),x2:X(F.B/2)+18,y2:Y(0),stroke:'var(--muted)','stroke-dasharray':'10 3 2 3','stroke-width':.7});
+  b1.pos.forEach(p=>el(g,'line',{x1:X(-hx),y1:Y(p),x2:X(hx),y2:Y(p),stroke:'var(--b1)','stroke-width':2}));
+  b2.pos.forEach(p=>el(g,'line',{x1:X(p),y1:Y(-hy),x2:X(p),y2:Y(hy),stroke:'var(--b2)','stroke-width':2}));
+  b1.pos.forEach(p=>{for(const e of[-hx,hx])el(g,'circle',{cx:X(e),cy:Y(p),r:2.4,fill:'var(--b1)'})});
+  b2.pos.forEach(p=>{for(const e of[-hy,hy])el(g,'circle',{cx:X(p),cy:Y(e),r:2.4,fill:'var(--b2)'})});
+  if(BY.R1){const r=BY.R1;el(g,'rect',{x:X(-r.dims.A/2),y:Y(r.dims.B/2),width:r.dims.A*s,height:r.dims.B*s,fill:'none',stroke:'var(--ring)','stroke-width':1.8,'stroke-dasharray':'7 3'});
+    leader(g,X(-r.dims.A/2),Y(-r.dims.B/2+60),X(-F.B/2)+10,Y(-F.L/2)+24,`R1 ${r.dia} รัดรอบ`,'--ring')}
+  if(COL){el(g,'rect',{x:X(-COL.b/2),y:Y(COL.h/2),width:COL.b*s,height:COL.h*s,fill:'var(--paper)',stroke:'var(--ink)','stroke-width':1.6});
+    if(BY.S1){const t=BY.S1;el(g,'rect',{x:X(-t.dims.A/2),y:Y(t.dims.B/2),width:t.dims.A*s,height:t.dims.B*s,fill:'none',stroke:'var(--st)','stroke-width':1.5})}
+    BY.C1.pos.forEach(([a,b])=>el(g,'circle',{cx:X(a),cy:Y(b),r:3.2,fill:'var(--dw)'}));
+    const [a,b]=BY.C1.pos[3]||BY.C1.pos[0];leader(g,X(a),Y(b),X(F.B/5),Y(F.L/5),`C1 ${lab(BY.C1)}`+(BY.S1?` / S1 ${BY.S1.dia}@${m2(COL.tie.s)}`:''),'--dw')}
+  dimH(g,X(-F.B/2),X(F.B/2),36,String(F.B),10);dimH(g,X(-F.B/2),X(0),56,String(F.B/2),6);dimH(g,X(0),X(F.B/2),56,String(F.B/2),6);
+  dimV(g,Y(F.L/2),Y(-F.L/2),30,String(F.L),10);dimV(g,Y(F.L/2),Y(0),50,String(F.L/2),6);dimV(g,Y(0),Y(-F.L/2),50,String(F.L/2),6);
+  const ya=Y(-F.L*0.2);
+  for(const x of[X(-F.B/2)-18,X(F.B/2)+18]){el(g,'circle',{cx:x,cy:ya,r:9,fill:'var(--paper)',stroke:'var(--accent)','stroke-width':1.4});el(g,'text',{x,y:ya+4,'text-anchor':'middle','font-size':11,'font-weight':600,fill:'var(--accent)'},'A')}
+  const i1=Math.min(b1.pos.length-1,1),i2=b2.pos.length-2;
+  leader(g,X(F.B/4),Y(b1.pos[i1]),X(F.B/2)+30,Y(-F.L/2)+10,`B1 ${lab(b1)}`,'--b1');
+  leader(g,X(b2.pos[Math.max(0,i2)]),Y(F.L/4),X(F.B/2)+30,Y(F.L*0.3),`B2 ${lab(b2)}`,'--b2');
+  const sp=(F.L-2*(F.L/2+b1.pos[0]))/Math.max(1,b1.n-1);
+  el(g,'text',{x:X(-F.B/2),y:oy+H+50,'font-size':10.5,fill:'var(--muted)'},`ระยะเรียง B1 ≈ ${sp.toFixed(0)} มม. · เส้นแรกห่างขอบ ${(F.L/2+b1.pos[0]).toFixed(0)} มม.`);
+})();
+
+// ---------- SECTION A-A ----------
+(function(){
+  const g=document.getElementById('sect'),top=COL?F.depth+130:F.t+150,s=Math.min(300/F.B,440/(top+SAND+LEAN)),ox=95;
+  const base=40+top*s,W=F.B*s,vw=ox+W+170,vh=base+(SAND+LEAN)*s+70;g.setAttribute('viewBox',`0 0 ${vw} ${vh}`);
+  const X=v=>ox+(v+F.B/2)*s,Z=v=>base-v*s,hb=F.B/2,b1=BY.B1,b2=BY.B2,hx=F.B/2-CV-b1.d/2,R=F.B/2+60;
+  el(g,'rect',{x:X(-hb),y:Z(-LEAN),width:W,height:SAND*s,fill:'var(--sand)',stroke:'var(--ink)','stroke-width':.8});
+  for(let i=0;i<60;i++)el(g,'circle',{cx:X(-hb+10+((i*137)%(F.B-20))),cy:Z(-LEAN-10-((i*53)%(SAND-15))),r:.9,fill:'var(--hatch)'});
+  el(g,'rect',{x:X(-hb),y:Z(0),width:W,height:LEAN*s,fill:'var(--lean)',stroke:'var(--ink)','stroke-width':.8});
+  const cb=COL?COL.b/2:0;
+  el(g,'path',{d:COL?`M${X(-hb)} ${Z(0)}H${X(hb)}V${Z(F.t)}H${X(cb)}V${Z(top)}H${X(-cb)}V${Z(F.t)}H${X(-hb)}Z`:`M${X(-hb)} ${Z(0)}H${X(hb)}V${Z(F.t)}H${X(-hb)}Z`,fill:'var(--concrete)','fill-opacity':.5,stroke:'var(--ink)','stroke-width':1.6});
+  if(COL)el(g,'path',{d:`M${X(-cb-40)} ${Z(top)}H${X(-10)}l6 -10 l8 20 l6 -10H${X(cb+40)}`,fill:'none',stroke:'var(--ink)','stroke-width':1});
+  const gl=Z(F.depth),gx=Math.max(cb,0);
+  el(g,'line',{x1:X(-hb-140),y1:gl,x2:X(-gx),y2:gl,stroke:'var(--ink)','stroke-width':1.2});el(g,'line',{x1:X(gx),y1:gl,x2:X(hb+140),y2:gl,stroke:'var(--ink)','stroke-width':1.2});
+  for(let x=-hb-130;x<-gx-20;x+=40)el(g,'line',{x1:X(x),y1:gl,x2:X(x+25),y2:gl+8,stroke:'var(--hatch)'});
+  for(let x=gx+10;x<hb+130;x+=40)el(g,'line',{x1:X(x),y1:gl,x2:X(x+25),y2:gl+8,stroke:'var(--hatch)'});
+  el(g,'path',{d:`M${X(hb*0.6)} ${gl-14}l-6 -10h12z`,fill:'none',stroke:'var(--ink)'});el(g,'text',{x:X(hb*0.6)+14,y:gl-16,'font-size':11},'±0.00 ระดับดิน');
+  el(g,'path',{d:`M${X(-hx)} ${Z(b1.top)}V${Z(b1.z)}H${X(hx)}V${Z(b1.top)}`,fill:'none',stroke:'var(--b1)','stroke-width':2.4});
+  b2.pos.forEach(p=>el(g,'circle',{cx:X(p),cy:Z(b2.z),r:2.3,fill:'var(--b2)'}));
+  if(BY.R1)for(const x of[-BY.R1.dims.A/2,BY.R1.dims.A/2])el(g,'circle',{cx:X(x),cy:Z(BY.R1.z),r:2.2,fill:'none',stroke:'var(--ring)','stroke-width':1.6});
+  if(COL){const c1=BY.C1,xs=[...new Set(c1.pos.map(p=>p[0]))].filter(x=>x!==0);
+    for(const x of xs){const sg=Math.sign(x);el(g,'path',{d:`M${X(x)} ${Z(top)}V${Z(c1.zb)}H${X(x+sg*c1.dims.B)}`,fill:'none',stroke:'var(--dw)','stroke-width':2.4})}
+    if(BY.S1)for(const z of BY.S1.levels)el(g,'line',{x1:X(-BY.S1.dims.A/2),y1:Z(z),x2:X(BY.S1.dims.A/2),y2:Z(z),stroke:'var(--st)','stroke-width':1.8});
+    dimV(g,Z(F.depth),Z(F.t),58,String(F.depth-F.t),8);dimH(g,X(-cb),X(cb),Z(top)-14,String(COL.b),6);
+    leader(g,X(xs[xs.length-1]),Z(F.t+(F.depth-F.t)*0.6),X(cb+120),Z(F.t+(F.depth-F.t)*0.65),`C1 ${lab(c1)}`,'--dw');
+    if(BY.S1){const z=BY.S1.levels[Math.floor(BY.S1.levels.length/2)];leader(g,X(BY.S1.dims.A/2),Z(z),X(cb+120),Z(z-60),`S1 ${BY.S1.dia}@${m2(COL.tie.s)}`,'--st')}
+    el(g,'text',{x:X(-hb),y:vh-6,'font-size':10.5,fill:'var(--muted)'},`C1 ยื่นเหนือดิน +${m2(c1.top-F.depth)} เพื่อทาบเหล็กเสา`)}
+  dimV(g,Z(F.depth),Z(0),35,String(F.depth),10);dimV(g,Z(F.t),Z(0),58,String(F.t),8);
+  const yb=Z(-LEAN-SAND)+30;dimH(g,X(-hb),X(hb),yb,String(F.B),10);dimH(g,X(-hb),X(0),yb+18,String(F.B/2),6);dimH(g,X(0),X(hb),yb+18,String(F.B/2),6);
+  el(g,'text',{x:X(-hb)+3,y:Z(15),'font-size':9,fill:'var(--muted)'},`cover ${CV}`);
+  const ly=Z(F.t+(COL?140:110));
+  leader(g,X(hb*0.5),Z(b1.z),X(R),ly+26,`B1 ${lab(b1)} (U)`,'--b1');
+  leader(g,X(b2.pos[b2.pos.length-3]||0),Z(b2.z),X(R),ly+40,`B2 ${lab(b2)}`,'--b2');
+  if(BY.R1)leader(g,X(BY.R1.dims.A/2),Z(BY.R1.z),X(R),ly+12,`R1 ${BY.R1.dia} รัดรอบ`,'--ring');
+  leader(g,X(hb*0.8),Z(-LEAN/2),X(R),Z(-LEAN/2),`คอนกรีตหยาบ ${LEAN}`,'--muted');
+  leader(g,X(hb*0.8),Z(-LEAN-SAND/2),X(R),Z(-LEAN-SAND/2),`ทรายบดอัด ${SAND}`,'--muted');
+})();
+
+// ---------- shape icons ----------
+function shapeSVG(b){
+  const col=`var(${b.c})`,d=b.dims;let s=`<svg class="shape" viewBox="0 0 150 62">`;
+  const st=`fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round"`;
+  if(b.shape==='U')s+=`<path d="M20 10V48H130V10" ${st}/><text x="75" y="60" text-anchor="middle">B=${d.B}</text><text x="4" y="32">A=${d.A}</text><text x="133" y="32">${d.C}</text>`;
+  if(b.shape==='L')s+=`<path d="M40 6V48H110" ${st}/><text x="44" y="28">A=${d.A}</text><text x="75" y="60" text-anchor="middle">B=${d.B}</text>`;
+  if(b.shape==='O')s+=`<rect x="45" y="8" width="60" height="44" ${st}/><path d="M45 8h18" stroke="${col}" stroke-width="6"/><text x="75" y="34" text-anchor="middle">${d.A}×${d.B}</text><text x="108" y="14">ทาบ ${d.L}</text>`;
+  if(b.shape==='S')s+=`<rect x="52" y="10" width="44" height="42" ${st}/><path d="M52 10l14 14M58 10l14 14" stroke="${col}" stroke-width="2.4"/><text x="74" y="35" text-anchor="middle">${d.A}×${d.B}</text><text x="100" y="20">135°</text>`;
+  return s+'</svg>';
+}
+
+// ---------- BBS / cutting plan / qty ----------
+function render(){
+  const N=Math.max(1,Math.min(500,parseInt(document.getElementById('nf').value)||1));
+  let tw=0,rows='';const byDia={};
+  BARS.forEach(b=>{
+    const pcs=b.n*N,len=pcs*b.cut/1000,kg=len*b.kgm;tw+=kg;byDia[b.dia]=(byDia[b.dia]||0)+kg;
+    const dd=Object.entries(b.dims).map(([k,v])=>`${k}=${v}`).join('<br>');
+    rows+=`<tr><td><span class="mark"><i style="background:var(${b.c})"></i>${b.m}</span></td><td>${b.dia}<br><small>${b.g}</small></td><td>${shapeSVG(b)}</td><td>${dd}</td><td><b>${(b.cut/1000).toFixed(2)}</b></td><td>${b.n}</td><td><b>${pcs}</b></td><td>${f2(len)}</td><td>${b.kgm.toFixed(3)}</td><td>${f2(kg)}</td><td class="l">${b.desc}${b.asm?' <span class="pill">ตรวจตารางเสา</span>':''}</td></tr>`;
+  });
+  document.getElementById('bbs').innerHTML=`<thead><tr><th>Mark</th><th>ขนาด</th><th>รูปการดัด (มม.)</th><th>ระยะ (มม.)</th><th>ยาวตัด<br>(ม./ท่อน)</th><th>ท่อน/ฐาน</th><th>รวม (ท่อน)<br>× ${N} ฐาน</th><th>ยาวรวม (ม.)</th><th>กก./ม.</th><th>น้ำหนัก (กก.)</th><th>หมายเหตุ</th></tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr><td colspan="9" style="text-align:right">${Object.entries(byDia).map(([d,k])=>`${d} ${f2(k)} กก.`).join(' · ')} · น้ำหนักรวม</td><td>${f2(tw)}</td><td class="l">${BARS.some(b=>b.g.endsWith('*'))?'* ชั้นคุณภาพเป็นค่าสมมติฐาน':''}</td></tr></tfoot>`;
+  let cr='',bars='',stock={};
+  BARS.forEach(b=>{
+    const pcs=b.n*N,nb=Math.ceil(pcs/b.per),full=Math.floor(pcs/b.per),rem=pcs-full*b.per,waste=(STOCK-b.per*b.cut)/1000;
+    stock[b.dia]=(stock[b.dia]||0)+nb;
+    cr+=`<tr><td><span class="mark"><i style="background:var(${b.c})"></i>${b.m}</span></td><td>${b.dia}</td><td>${(b.cut/1000).toFixed(2)}</td><td>${pcs}</td><td>${b.per} ท่อน/เส้น<br><small>เศษ ${waste.toFixed(2)} ม.</small></td><td><b>${nb}</b></td><td class="l">${[full?`${full} เส้น × ${b.per} ท่อน`:'',rem?`1 เส้น × ${rem} ท่อน (เศษ ${((STOCK-rem*b.cut)/1000).toFixed(2)} ม.)`:''].filter(Boolean).join(' + ')}</td></tr>`;
+    const segs=Array.from({length:b.per},()=>`<div class="seg" style="width:${b.cut/STOCK*100}%;background:var(${b.c})">${(b.cut/1000).toFixed(2)}</div>`).join('');
+    bars+=`<div class="bar"><div class="lbl"><b>${b.m}</b> ${b.dia} · Pattern ×${nb} เส้น</div><div class="track">${segs}</div></div>`;
+  });
+  cr+=`<tr><td colspan="5" style="text-align:right"><b>สั่งเหล็กเส้น ${STOCK/1000} ม.</b></td><td colspan="2" class="l"><b>${Object.entries(stock).map(([d,n])=>`${d} = ${n} เส้น`).join(' · ')}</b></td></tr>`;
+  document.getElementById('cut').innerHTML=`<thead><tr><th>Mark</th><th>ขนาด</th><th>ยาวตัด (ม.)</th><th>จำนวนท่อน</th><th>รูปแบบตัดต่อเส้น</th><th>ใช้ (เส้น)</th><th>วิธีตัด</th></tr></thead><tbody>${cr}</tbody>`;
+  document.getElementById('cutbars').innerHTML=bars;
+  document.getElementById('qty').innerHTML=`<thead><tr><th>รายการ</th><th>สูตร</th><th>ต่อฐาน</th><th>× ${N} ฐาน</th><th>หน่วย</th></tr></thead><tbody>`+
+    CALC.qty.map(q=>`<tr><td>${q.item}</td><td>${q.f}</td><td>${f2(q.v)}</td><td>${f2(q.v*N)}</td><td>${q.u}</td></tr>`).join('')+'</tbody>';
+}
+document.getElementById('nf').addEventListener('input',render);
+render();
+
+// ---------- 3D ----------
+(function(){
+  if(!window.THREE){document.getElementById('info').textContent='โหลดไลบรารี 3 มิติไม่สำเร็จ';return}
+  const box=document.getElementById('v3d'),scene=new THREE.Scene(),sz=Math.max(F.B,F.L,F.depth)/1000;
+  const cam=new THREE.PerspectiveCamera(40,1,.01,100);cam.position.set(1.7*sz,1.5*sz,2.0*sz);
+  const ren=new THREE.WebGLRenderer({antialias:true});ren.setPixelRatio(Math.min(devicePixelRatio,2));box.prepend(ren.domElement);
+  const ctl=new THREE.OrbitControls(cam,ren.domElement);ctl.target.set(0,F.depth/2000,0);ctl.enableDamping=true;
+  scene.add(new THREE.HemisphereLight(0xffffff,0x667766,.85));const dl=new THREE.DirectionalLight(0xffffff,.7);dl.position.set(2,3,1.5);scene.add(dl);
+  const groups={};const grp=k=>{if(!groups[k]){groups[k]=new THREE.Group();scene.add(groups[k])}return groups[k]};
+  const C=v=>new THREE.Color(css(v)||'#888');const mats=[];
+  function mat(v,o){const m=new THREE.MeshStandardMaterial({color:C(v),roughness:.6,metalness:o==null?.3:0,transparent:o!=null,opacity:o==null?1:o,depthWrite:o==null});m.userData.v=v;mats.push(m);return m}
+  const P=(x,y,z)=>new THREE.Vector3(x/1000,z/1000,-y/1000);
+  function bar(pts,dia,v,info,g){
+    const path=new THREE.CurvePath(),rr=dia*2.5/1000;let cur=pts[0];
+    for(let i=1;i<pts.length;i++){const p=pts[i];
+      if(i<pts.length-1){const a=p.clone().sub(cur).normalize(),b=pts[i+1].clone().sub(p).normalize();
+        const p1=p.clone().addScaledVector(a,-rr),p2=p.clone().addScaledVector(b,rr);
+        path.add(new THREE.LineCurve3(cur,p1));path.add(new THREE.QuadraticBezierCurve3(p1,p,p2));cur=p2}
+      else path.add(new THREE.LineCurve3(cur,p))}
+    const m=new THREE.Mesh(new THREE.TubeGeometry(path,pts.length*24,dia/2000,8,false),mat(v));m.userData.info=info;grp(g).add(m)}
+  const inf=b=>`<b>${b.m}</b> ${lab(b)} · ยาวตัด ${(b.cut/1000).toFixed(2)} ม. · ${b.desc}`;
+  const b1=BY.B1,b2=BY.B2,hx=F.B/2-CV-b1.d/2,hy=F.L/2-CV-b2.d/2;
+  b1.pos.forEach(y=>bar([P(-hx,y,b1.top),P(-hx,y,b1.z),P(hx,y,b1.z),P(hx,y,b1.top)],b1.d,'--b1',inf(b1),'B1'));
+  b2.pos.forEach(x=>bar([P(x,-hy,b2.top),P(x,-hy,b2.z),P(x,hy,b2.z),P(x,hy,b2.top)],b2.d,'--b2',inf(b2),'B2'));
+  if(BY.R1){const r=BY.R1,a=r.dims.A/2,b=r.dims.B/2,z=r.z,l=r.dims.L;
+    bar([P(-a+l/2,-b,z),P(a,-b,z),P(a,b,z),P(-a,b,z),P(-a,-b,z+r.d),P(-a+l*1.5,-b,z+r.d)],r.d,'--ring',inf(r),'R1')}
+  if(COL){const c1=BY.C1;c1.pos.forEach(([a,b])=>{const ax=Math.abs(a)>=Math.abs(b),sx=ax?Math.sign(a)||1:0,sy=ax?0:Math.sign(b)||1;
+      bar([P(a,b,c1.top),P(a,b,c1.zb),P(a+sx*c1.dims.B,b+sy*c1.dims.B,c1.zb)],c1.d,'--dw',inf(c1),'C1')});
+    if(BY.S1){const s1=BY.S1,h=s1.dims.A/2-s1.d/2,k=s1.dims.B/2-s1.d/2,hk=Math.min(40,h);
+      s1.levels.forEach(z=>bar([P(-h+hk,-k,z),P(-h,-k+hk,z),P(-h,-k,z),P(h,-k,z),P(h,k,z),P(-h,k,z),P(-h,-k,z),P(-h+hk,-k+hk,z)],s1.d,'--st',inf(s1),'S1'))}}
+  const boxM=(w,h,d,v,o,y,g)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(v,o));m.position.y=y;grp(g).add(m);return m};
+  const solids=[boxM(F.B/1000,F.t/1000,F.L/1000,'--concrete',.28,F.t/2000,'CON')];
+  if(COL)solids.push(boxM(COL.b/1000,(F.depth-F.t)/1000,COL.h/1000,'--concrete',.28,(F.depth+F.t)/2000,'CON'));
+  solids.forEach(m=>m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry),new THREE.LineBasicMaterial({color:C('--ink')}))));
+  boxM(F.B/1000,LEAN/1000,F.L/1000,'--lean',1,-LEAN/2000,'BASE');boxM(F.B/1000,SAND/1000,F.L/1000,'--sand',1,-(LEAN+SAND/2)/1000,'BASE');
+  const gnd=new THREE.Mesh(new THREE.PlaneGeometry(2.4*sz,2.4*sz),mat('--hatch',.18));gnd.rotation.x=-Math.PI/2;gnd.position.y=F.depth/1000;grp('GND').add(gnd);
+  const T=[['CON','คอนกรีต','--concrete'],...BARS.map(b=>[b.m,b.m,b.c]),['BASE','ทราย/คอนกรีตหยาบ','--sand'],['GND','ระดับดิน','--hatch']];
+  document.getElementById('tog').innerHTML=T.map(([k,l,c])=>`<button id="t-${k}" aria-pressed="true" data-k="${k}"><i class="sw" style="background:var(${c})"></i>${l}</button>`).join('');
+  document.getElementById('tog').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);groups[b.dataset.k].visible=on});
+  const rc=new THREE.Raycaster(),mv=new THREE.Vector2();let down;
+  ren.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+  ren.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5)return;const r=ren.domElement.getBoundingClientRect();mv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);rc.setFromCamera(mv,cam);
+    const hit=rc.intersectObjects(scene.children,true).find(h=>h.object.userData.info&&h.object.parent.visible);document.getElementById('info').innerHTML=hit?hit.object.userData.info:'แตะเหล็กเส้นใดก็ได้เพื่อดู Mark และความยาวตัด'});
+  function theme(){scene.background=C('--bg');mats.forEach(m=>m.color=C(m.userData.v))}
+  theme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',theme);new MutationObserver(theme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  function size(){const w=box.clientWidth,h=box.clientHeight;ren.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+  new ResizeObserver(size).observe(box);size();
+  (function loop(){requestAnimationFrame(loop);ctl.update();ren.render(scene,cam)})();
+})();
+</script>
