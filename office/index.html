@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>COST NINE Live Office</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a live office monitor — the room photo where work is happening fills the stage like a broadcast feed, with a subtitle bar; the team board and activity log sit in a side rail */
+:root {
+  --ink-bg: #0c1013;
+  --rail: #12181c;
+  --line: #243038;
+  --text: #ecebe6;
+  --muted: #95a3a8;
+  --brass: #d9a95b;
+  --teal: #44cdbf;
+  --ok: #5ccb8c;
+  --warn: #f0a63c;
+  --bad: #ef6b5b;
+  --meet: #ab97ff;
+  --f-display: "Chakra Petch", "IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Thai", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ink-bg); color: var(--text); font-family: var(--f-body); font-size: 14.5px; line-height: 1.55; }
+[hidden] { display: none !important; }
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 370px; }
+.code { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* Stage */
+.stage { position: relative; overflow: hidden; background: #000; min-width: 0; }
+.stage .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.1s ease; }
+.stage .ph.on { opacity: 1; animation: drift 9s ease-out forwards; }
+.stage video.ph { opacity: 1; animation: none; }
+.shots { position: absolute; z-index: 3; right: max(20px, env(safe-area-inset-right, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 22px); display: flex; gap: 5px; }
+.shots i { width: 22px; height: 3px; background: rgba(236, 235, 230, 0.3); }
+.shots i.on { background: var(--brass); }
+@keyframes drift { from { transform: scale(1.0) translate(0, 0); } to { transform: scale(1.07) translate(-1%, -1%); } }
+.top { position: absolute; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px 40px max(20px, env(safe-area-inset-left, 0px)); background: linear-gradient(rgba(6, 9, 11, 0.82), transparent); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.brand .code { color: var(--brass); }
+.brand h1 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: 0.02em; }
+.brand h1 b { color: var(--brass); }
+#jobLine { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.badge { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; padding: 2px 8px; border: 1px solid currentColor; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.badge.live { color: var(--bad); } .badge.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--bad); animation: blink 1.4s infinite; }
+.badge.demo { color: var(--brass); } .badge.off { color: var(--muted); }
+@keyframes blink { 50% { opacity: 0.25; } }
+.room { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; background: rgba(6, 9, 11, 0.7); padding: 4px 10px; border: 1px solid rgba(236, 235, 230, 0.2); white-space: nowrap; }
+.sub { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 18px) max(20px, env(safe-area-inset-left, 0px)); background: linear-gradient(transparent, rgba(6, 9, 11, 0.92) 55%); display: flex; flex-direction: column; gap: 6px; }
+.sub .k { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.chip { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 2px 8px; color: #0c1013; background: var(--teal); font-weight: 500; }
+.chip.ok { background: var(--ok); } .chip.warn { background: var(--warn); } .chip.bad { background: var(--bad); } .chip.meet { background: var(--meet); } .chip.brass { background: var(--brass); }
+.sub .who { font-size: 15px; color: #d9dfdc; }
+.sub .msg { font-family: var(--f-display); font-weight: 600; font-size: clamp(20px, 2.6vw, 32px); line-height: 1.3; text-wrap: balance; max-width: 40ch; }
+.sub .quote { font-size: 15px; color: #cfd8d5; max-width: 70ch; min-height: 1.5em; }
+.ctl { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.ctl button { background: rgba(6, 9, 11, 0.6); color: var(--text); border: 1px solid rgba(236, 235, 230, 0.28); font: inherit; font-size: 13px; padding: 6px 12px; cursor: pointer; }
+.ctl button:hover { border-color: var(--teal); }
+.ctl button[aria-pressed="true"] { background: var(--teal); color: #0c1013; border-color: var(--teal); font-weight: 600; }
+button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* Rail */
+.rail { background: var(--rail); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; min-width: 0; padding-right: env(safe-area-inset-right, 0px); }
+.tabs { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+.tabs button { flex: 1; background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: inherit; font-size: 14px; padding: 12px 8px; cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--brass); font-weight: 600; }
+.pane { overflow-y: auto; min-height: 0; flex: 1; }
+#board { list-style: none; margin: 0; padding: 4px 0; }
+#board li { display: grid; grid-template-columns: 10px 1fr auto; gap: 2px 10px; padding: 9px 16px; border-bottom: 1px solid var(--line); align-items: center; }
+#board li.act { background: rgba(68, 205, 191, 0.08); }
+#board .dot { width: 9px; height: 9px; border-radius: 50%; background: #3a464d; }
+#board .nm { font-weight: 600; font-size: 14px; min-width: 0; }
+#board .nm small { font-family: var(--f-mono); font-weight: 500; font-size: 10.5px; color: var(--muted); margin-left: 6px; }
+#board .st { font-size: 12px; color: var(--muted); white-space: nowrap; }
+#board .task { grid-column: 2 / -1; font-size: 12.5px; color: #c3cdcb; overflow-wrap: anywhere; }
+#board .bar { grid-column: 2 / -1; height: 3px; background: #24303a; }
+#board .bar span { display: block; height: 100%; width: 0; background: var(--teal); transition: width .6s ease; }
+#board li[data-st="assigned"] .dot, #board li[data-st="working"] .dot { background: var(--teal); }
+#board li[data-st="working"] .dot { box-shadow: 0 0 8px var(--teal); }
+#board li[data-st="delivered"] .dot, #board li[data-st="pass"] .dot { background: var(--ok); }
+#board li[data-st="pass"] .bar span, #board li[data-st="delivered"] .bar span { background: var(--ok); }
+#board li[data-st="revise"] .dot { background: var(--warn); } #board li[data-st="revise"] .bar span { background: var(--warn); }
+#board li[data-st="issue"] .dot { background: var(--bad); }
+#board li[data-st="meeting"] .dot { background: var(--meet); }
+#feed { list-style: none; margin: 0; padding: 4px 0; }
+#feed li { display: grid; grid-template-columns: 42px 1fr; gap: 1px 8px; padding: 8px 16px; border-left: 3px solid transparent; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+#feed time { font-family: var(--f-mono); font-size: 11px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+#feed .k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--teal); }
+#feed .m { grid-column: 2; overflow-wrap: anywhere; }
+#feed li.c-ok { border-left-color: var(--ok); } #feed li.c-ok .k { color: var(--ok); }
+#feed li.c-warn { border-left-color: var(--warn); } #feed li.c-warn .k { color: var(--warn); }
+#feed li.c-bad { border-left-color: var(--bad); } #feed li.c-bad .k { color: var(--bad); }
+#feed li.c-meet { border-left-color: var(--meet); } #feed li.c-meet .k { color: var(--meet); }
+#feed li.c-brass { border-left-color: var(--brass); } #feed li.c-brass .k { color: var(--brass); }
+#feed li.c-teal { border-left-color: var(--teal); }
+.empty { padding: 16px; color: var(--muted); font-size: 13.5px; }
+#rooms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px; }
+#rooms button { padding: 0; border: 1px solid var(--line); background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+#rooms img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+#rooms span { display: block; padding: 5px 8px; font-size: 12.5px; }
+.note { flex: none; border-top: 1px solid var(--line); padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px); font-size: 11.5px; color: var(--muted); }
+
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .app { display: flex; flex-direction: column; height: auto; }
+  .stage { aspect-ratio: 4 / 5; max-height: 78vh; min-height: 420px; }
+  .brand h1 { font-size: 19px; }
+  .sub .msg { font-size: 20px; }
+  .rail { border-left: 0; border-top: 1px solid var(--line); }
+  .pane { max-height: none; overflow: visible; }
+  .top, .sub { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) { .stage .ph.on { animation: none; } .stage .ph { transition: none; } .badge.live::before { animation: none; } }
+</style>
+
+<div class="app">
+  <main class="stage" aria-label="ภาพห้องที่กำลังมีงานเกิดขึ้น">
+    <img class="ph on" id="phA" src="img/09-tower.jpg" alt="ตึก COST NINE บนถนนสุขุมวิท">
+    <img class="ph" id="phB" alt="">
+    <video class="ph" id="vid" muted playsinline loop preload="auto" hidden></video>
+    <div class="top">
+      <div class="brand">
+        <span class="code">Cost Nine Co., Ltd. · Sukhumvit ชั้น 38</span>
+        <h1><b>COST NINE</b> Live Office</h1>
+        <div id="jobLine"><span id="badge" class="badge off">กำลังเชื่อมต่อ</span><span id="jobTitle">กำลังโหลดงาน…</span></div>
+      </div>
+      <span class="room" id="roomName">ตึก COST NINE</span>
+    </div>
+    <div class="shots" id="shots" aria-hidden="true"></div>
+    <div class="sub" aria-live="polite">
+      <div class="k"><span class="chip brass" id="chip">พร้อมทำงาน</span><span class="who" id="who">บริษัท คอสท์ไนน์ จำกัด</span></div>
+      <div class="msg" id="msg">ออฟฟิศชั้น 38 ใจกลางสุขุมวิท</div>
+      <div class="quote" id="quote"></div>
+      <div class="ctl">
+        <button type="button" id="b-pause" aria-pressed="false">หยุดภาพ</button>
+        <button type="button" id="b-speed" aria-pressed="false">เร็ว 2×</button>
+        <button type="button" id="b-demo" aria-pressed="false">ดูตัวอย่าง</button>
+      </div>
+    </div>
+  </main>
+
+  <aside class="rail">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="t-board" aria-selected="true">ทีมงาน</button>
+      <button type="button" role="tab" id="t-feed" aria-selected="false">ความเคลื่อนไหว</button>
+      <button type="button" role="tab" id="t-rooms" aria-selected="false">ห้อง</button>
+    </div>
+    <div class="pane" id="p-board"><ul id="board"></ul></div>
+    <div class="pane" id="p-feed" hidden><ul id="feed"></ul><p class="empty" id="feedEmpty">ยังไม่มีความเคลื่อนไหว</p></div>
+    <div class="pane" id="p-rooms" hidden><div id="rooms"></div></div>
+    <p class="note">ภาพในออฟฟิศเป็นภาพจำลองที่สร้างด้วย AI ใช้แสดงจังหวะการทำงานของทีม ไม่ใช่ภาพถ่ายบุคคลหรือสถานที่จริง · <a href="gallery.html" style="color:var(--brass)">ภาพห้องทั้งหมด</a> · <a href="3d.html" style="color:var(--brass)">ผัง 3 มิติ</a></p>
+  </aside>
+</div>
+
+<script>
+(function () {
+"use strict";
+const IMG = {
+  tower: ["img/09-tower.jpg", "ตึก COST NINE สุขุมวิท"], lobby: ["img/01-lobby.jpg", "ล็อบบี้ต้อนรับ"], ceo: ["img/02-ceo.jpg", "ห้องพี่โสภณ"],
+  qs: ["img/03-qs.jpg", "โซนทีม QS"], meet: ["img/04-meeting.jpg", "ห้องประชุมแก้ปัญหา"], studio: ["img/05-content.jpg", "สตูดิโอ Content"],
+  dev: ["img/06-dev.jpg", "แล็บทีมเขียนโปรแกรม"], train: ["img/07-training.jpg", "ห้องอบรม"], lounge: ["img/08-lounge.jpg", "แพนทรี & Lounge"],
+  order: ["img/s-order.jpg", "ห้องพี่โสภณ"], assign: ["img/s-assign.jpg", "โต๊ะหัวหน้าทีม"], working: ["img/s-working.jpg", "โซนทีม QS"],
+  deliver: ["img/s-deliver.jpg", "โต๊ะหัวหน้าทีม"], revise: ["img/s-revise.jpg", "โซนทีม QS"], issue: ["img/s-issue.jpg", "โต๊ะเลขา"],
+  agree: ["img/s-agree.jpg", "ห้องประชุมแก้ปัญหา"], report: ["img/s-report.jpg", "ห้องพี่โสภณ"], approve: ["img/s-approve.jpg", "ห้องพี่โสภณ"],
+  content: ["img/s-content.jpg", "สตูดิโอ Content"], handover: ["img/s-handover.jpg", "โต๊ะเลขา"],
+};
+const F = n => "img/" + n + ".jpg";
+// each work step plays as a short cut sequence: wide/approach → main action → close-up detail
+const SHOTS = {
+  order: ["f-order-1", "s-order", "f-order-3"], assign: ["f-assign-1", "s-assign", "f-assign-3"], working: ["f-work-1", "s-working", "f-work-3"],
+  deliver: ["f-deliver-1", "s-deliver", "f-deliver-3"], revise: ["s-revise", "f-revise-2", "f-revise-3"], issue: ["f-issue-1", "s-issue", "f-issue-3"],
+  meet: ["f-meet-1", "04-meeting", "f-meet-3"], meetTalk: ["04-meeting", "f-meet-3"], agree: ["f-agree-1", "s-agree", "f-agree-3"],
+  handover: ["f-hand-1", "s-handover", "f-hand-3"], report: ["f-report-1", "s-report", "f-report-3"], approve: ["s-approve", "f-approve-2"],
+  content: ["s-content", "f-content-2"], studio: ["05-content", "f-content-2"], qs: ["03-qs", "f-work-1"],
+  dev: ["06-dev"], train: ["07-training"], ceo: ["02-ceo"], lobby: ["01-lobby"], lounge: ["08-lounge"], tower: ["09-tower"],
+};
+// real video clips, when available, replace a step's shots: add "key": "video/<key>.mp4" and publish the file
+const VIDEOS = {};
+const preload = new Set();
+Object.values(SHOTS).flat().forEach(n => { if (preload.has(n)) return; preload.add(n); const i = new Image(); i.src = F(n); });
+
+const TEAM = [
+  ["CEO", "พี่โสภณ", "ผู้บริหาร"], ["SEC", "เลขา", "ประสานงานทุกฝ่าย"], ["HEAD", "หัวหน้าทีม", "แจกงาน · ตรวจงาน"],
+  ["STR", "วิศวกรโครงสร้าง", "ถอดแบบ"], ["ARC", "วิศวกรสถาปัตย์", "ถอดแบบ"], ["MEP", "วิศวกรงานระบบ", "ไฟฟ้า ประปา แอร์"],
+  ["PUR", "ฝ่ายจัดซื้อ", "เช็คราคา"], ["PLN", "ทีมวางแผน", "Gantt · S-Curve"], ["BOQ", "ทีม BOQ / Presentation", "BOQ · สไลด์"],
+  ["CNT", "ทีม Content AI", "โพสต์ Facebook"], ["TRN", "ทีมเนื้อหาอบรม", "หลักสูตร"], ["WEB", "นักพัฒนาเว็บ", "Web App"], ["SKP", "นักพัฒนา SketchUp", "Extension"],
+];
+const NAME = Object.fromEntries(TEAM.map(t => [t[0], t[1]]));
+const ALIAS = { DEV: "WEB", SOPHON: "CEO" };
+const norm = c => ALIAS[c] || c;
+const STATUS_TH = { idle: "ว่าง", assigned: "ได้รับงาน", working: "กำลังทำ", delivered: "ส่งงานแล้ว", pass: "ผ่านแล้ว", revise: "กำลังแก้ไข", issue: "พบปัญหา", meeting: "ประชุมอยู่" };
+const TYPE = {
+  order: ["คำสั่งงาน", "brass"], plan: ["วางแผน", "teal"], assign: ["แจกงาน", "teal"], working: ["กำลังทำ", "teal"], deliver: ["ส่งงาน", "ok"],
+  review_pass: ["ตรวจผ่าน", "ok"], review_fail: ["ส่งกลับแก้", "warn"], issue: ["พบปัญหา", "bad"], meeting_start: ["เปิดประชุม", "meet"],
+  meeting_say: ["ในที่ประชุม", "meet"], meeting_end: ["มติที่ประชุม", "meet"], handover: ["สรุปส่งมอบ", "brass"], report: ["รายงานพี่โสภณ", "brass"],
+  approval_request: ["ขออนุมัติ", "brass"], approved: ["อนุมัติ", "ok"], rejected: ["ให้แก้ไข", "warn"], published: ["เผยแพร่แล้ว", "ok"], done: ["ปิดงาน", "ok"], note: ["บันทึก", "teal"],
+};
+
+/* ---------- board ---------- */
+const boardEl = document.getElementById("board");
+const ROW = {};
+TEAM.forEach(([c, n, role]) => {
+  const li = document.createElement("li"); li.dataset.st = "idle";
+  li.innerHTML = `<span class="dot"></span><span class="nm">${n}<small>${c}</small></span><span class="st">ว่าง</span><span class="task">${role}</span><span class="bar"><span></span></span>`;
+  boardEl.appendChild(li); ROW[c] = { li, role };
+});
+function setStatus(c, st, pct, task) {
+  const r = ROW[c]; if (!r) return;
+  r.li.dataset.st = st;
+  r.li.querySelector(".st").textContent = (STATUS_TH[st] || st) + (st === "working" && pct != null ? " " + Math.round(pct) + "%" : "");
+  r.li.querySelector(".task").textContent = task || r.role;
+  const bar = r.li.querySelector(".bar span");
+  const w = st === "pass" || st === "delivered" ? 100 : st === "idle" ? 0 : st === "assigned" ? 5 : pct != null ? pct : parseFloat(bar.style.width) || 0;
+  bar.style.width = Math.max(0, Math.min(100, w)) + "%";
+}
+function highlight(codes) { Object.entries(ROW).forEach(([c, r]) => r.li.classList.toggle("act", codes.includes(c))); }
+function resetBoard() { TEAM.forEach(([c]) => setStatus(c, "idle")); highlight([]); meeting.clear(); }
+
+/* ---------- events ---------- */
+const meeting = new Set();
+const teamsOf = ev => (ev.teams && ev.teams.length ? ev.teams : ev.team ? [ev.team] : []).map(norm).filter(c => ROW[c]);
+const names = cs => cs.map(c => NAME[c] || c).join(", ");
+function sceneOf(ev) {
+  const ts = teamsOf(ev), c = ts[0] || "";
+  const area = c === "CNT" ? "content" : c === "WEB" || c === "SKP" ? "dev" : c === "TRN" ? "train" : "";
+  switch (ev.type) {
+    case "order": return "order";
+    case "plan": return "assign";
+    case "assign": return area === "content" ? "studio" : area === "dev" ? "dev" : area === "train" ? "train" : "assign";
+    case "working": return area === "content" ? "content" : area || (["PUR", "PLN", "BOQ"].includes(c) ? "qs" : "working");
+    case "deliver": return area && norm(ev.to) === "SEC" ? "handover" : "deliver";
+    case "review_pass": return "qs";
+    case "review_fail": return "revise";
+    case "issue": return "issue";
+    case "meeting_start": return "meet";
+    case "meeting_say": return "meetTalk";
+    case "meeting_end": return "agree";
+    case "handover": return "handover";
+    case "report": return "report";
+    case "approval_request": case "approved": case "rejected": return "approve";
+    case "published": return "content";
+    case "done": return "ceo";
+    default: return area || "qs";
+  }
+}
+function whoLine(ev) {
+  const ts = teamsOf(ev);
+  switch (ev.type) {
+    case "order": return "พี่โสภณ → เลขา";
+    case "plan": return "หัวหน้าทีม";
+    case "assign": return (ts.some(c => ["STR", "ARC", "MEP", "PUR", "PLN", "BOQ"].includes(c)) ? "หัวหน้าทีม → เลขา → " : "เลขา → ") + names(ts);
+    case "deliver": return names(ts) + " → " + (NAME[norm(ev.to || "HEAD")] || ev.to);
+    case "review_pass": case "review_fail": return "หัวหน้าทีม → " + names(ts);
+    case "issue": return names(ts) + " → เลขา" + (ev.with && ev.with.length ? " (เกี่ยวกับ " + names(ev.with.map(norm)) + ")" : "");
+    case "meeting_start": case "meeting_end": return "เลขา + " + names(ts.length ? ts : [...meeting]);
+    case "meeting_say": return names(ts) + " ในที่ประชุม";
+    case "handover": return "หัวหน้าทีม → เลขา";
+    case "report": case "approval_request": return "เลขา → พี่โสภณ";
+    case "approved": case "rejected": return "พี่โสภณ";
+    case "done": return "เลขา";
+    default: return names(ts) || NAME[norm(ev.from || "SEC")] || "";
+  }
+}
+function quoteOf(ev) {
+  const t = ev.type;
+  if (t === "order") return "เลขา: “รับคำสั่งค่ะ จะส่งหัวหน้าวางแผนทันที”";
+  if (t === "assign") return "“รับงานครับ”";
+  if (t === "deliver") return "หัวหน้า: “รับไว้ตรวจครับ”";
+  if (t === "review_fail") return "“รับทราบ จะแก้ให้ครับ”";
+  if (t === "issue") return "เลขา: “จะนัดประชุมทีมที่เกี่ยวข้องให้ค่ะ”";
+  if (t === "meeting_end") return "ทีมกลับไปแก้งานตามมติ";
+  if (t === "handover") return "เลขา: “รับค่ะ จะรายงานพี่โสภณ”";
+  if (t === "report") return "พี่โสภณ: “ขอบคุณครับ”";
+  if (t === "approval_request") return "พี่โสภณกำลังพิจารณา";
+  return "";
+}
+function involved(ev) {
+  const s = new Set(teamsOf(ev));
+  ({ order: ["CEO", "SEC"], plan: ["HEAD"], assign: ["SEC"], deliver: [norm(ev.to || "HEAD")], review_pass: ["HEAD"], review_fail: ["HEAD"], issue: ["SEC"], meeting_start: ["SEC"], meeting_end: ["SEC"], handover: ["HEAD", "SEC"], report: ["SEC", "CEO"], approval_request: ["SEC", "CEO"], approved: ["CEO"], rejected: ["CEO", "SEC"], done: ["SEC"] }[ev.type] || []).forEach(c => s.add(c));
+  if (ev.type === "meeting_end") meeting.forEach(c => s.add(c));
+  return [...s];
+}
+function applyState(ev) {
+  const ts = teamsOf(ev);
+  const m = { assign: ["assigned", 0], working: ["working", ev.pct], deliver: ["delivered", 100], review_pass: ["pass", 100], review_fail: ["revise", 60], issue: ["issue", null], meeting_start: ["meeting", null], approval_request: ["delivered", 100], approved: ["pass", 100], rejected: ["revise", 60], published: ["pass", 100] }[ev.type];
+  if (ev.type === "meeting_end") meeting.forEach(c => setStatus(c, "working", null, "แก้งานตามมติ: " + ev.msg));
+  if (m) ts.forEach(c => setStatus(c, m[0], m[1], ev.msg));
+  if (ev.type === "meeting_start") ts.forEach(c => meeting.add(c));
+  if (ev.type === "meeting_end") meeting.clear();
+  if (ev.type === "done") TEAM.forEach(([c]) => { if (ROW[c].li.dataset.st !== "idle") setStatus(c, "pass", 100, "งานปิดแล้ว"); });
+}
+
+/* ---------- stage ---------- */
+const phA = document.getElementById("phA"), phB = document.getElementById("phB");
+let front = phA, curScene = "tower", shotTimer = 0;
+const vid = document.getElementById("vid");
+const $ = id => document.getElementById(id);
+function showImg(src, alt) {
+  const back = front === phA ? phB : phA;
+  back.classList.remove("on"); back.src = src; back.alt = alt;
+  void back.offsetWidth; back.classList.add("on"); front.classList.remove("on"); front = back;
+}
+function markShot(i, n) { $("shots").innerHTML = n > 1 ? Array.from({ length: n }, (_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("") : ""; }
+function showScene(key, total) {
+  const room = (IMG[key] || IMG[{ order: "ceo", report: "ceo", approve: "ceo", assign: "qs", working: "qs", deliver: "qs", revise: "qs", issue: "qs", meet: "meet", meetTalk: "meet", agree: "meet", handover: "qs", content: "studio" }[key]] || IMG.qs)[1];
+  $("roomName").textContent = room;
+  clearTimeout(shotTimer);
+  if (VIDEOS[key]) {
+    vid.hidden = false; markShot(0, 0);
+    if (curScene !== key) { vid.src = VIDEOS[key]; vid.play().catch(() => {}); }
+    curScene = key; return;
+  }
+  if (!vid.hidden) { vid.pause(); vid.hidden = true; }
+  const shots = SHOTS[key] || [key];
+  curScene = key;
+  const per = Math.max(1400, (total || 6000) / shots.length);
+  let i = 0;
+  const step = () => {
+    showImg(F(shots[i]), room); markShot(i, shots.length);
+    i++; if (i < shots.length) shotTimer = setTimeout(step, per);
+  };
+  step();
+}
+vid.addEventListener("error", () => { const k = curScene; delete VIDEOS[k]; vid.hidden = true; curScene = ""; showScene(k); });
+function present(ev) {
+  const [label, tone] = TYPE[ev.type] || TYPE.note;
+  showScene(sceneOf(ev), currentDwell);
+  const chip = $("chip"); chip.textContent = label; chip.className = "chip " + tone;
+  $("who").textContent = whoLine(ev);
+  $("msg").textContent = ev.msg || label;
+  $("quote").textContent = quoteOf(ev);
+  applyState(ev);
+  highlight(involved(ev));
+  addFeed(ev);
+}
+
+/* ---------- feed ---------- */
+const feedEl = $("feed");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function bkk(t) { const d = t ? new Date(t) : new Date(); if (isNaN(d)) return ""; const b = new Date(d.getTime() + 7 * 3600e3); return String(b.getUTCHours()).padStart(2, "0") + ":" + String(b.getUTCMinutes()).padStart(2, "0"); }
+function addFeed(ev) {
+  $("feedEmpty").hidden = true;
+  const [label, tone] = TYPE[ev.type] || TYPE.note;
+  const li = document.createElement("li"); li.className = "c-" + tone;
+  li.innerHTML = `<time>${bkk(ev.t)}</time><span class="k">${esc(label)} · ${esc(whoLine(ev))}</span><span class="m">${esc(ev.msg)}</span>`;
+  feedEl.insertBefore(li, feedEl.firstChild);
+  while (feedEl.children.length > 120) feedEl.removeChild(feedEl.lastChild);
+}
+function clearFeed() { feedEl.innerHTML = ""; $("feedEmpty").hidden = false; }
+
+/* ---------- playback queue ---------- */
+let speed = 1, paused = false, queue = [], timer = 0, playing = false;
+let currentDwell = 6600;
+function dwell() { const base = queue.length > 6 ? 2600 : queue.length > 2 ? 4200 : 6600; return base / speed; }
+function pump() {
+  if (paused || playing) return;
+  const ev = queue.shift();
+  if (!ev) return;
+  playing = true; currentDwell = dwell(); present(ev);
+  timer = setTimeout(() => { playing = false; pump(); }, currentDwell);
+}
+function enqueue(ev) { queue.push(ev); pump(); }
+function flush() { clearTimeout(timer); queue = []; playing = false; }
+$("b-pause").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); e.currentTarget.textContent = paused ? "เล่นต่อ" : "หยุดภาพ"; if (!paused) { playing = false; pump(); } });
+$("b-speed").addEventListener("click", e => { speed = speed === 1 ? 2 : 1; e.currentTarget.setAttribute("aria-pressed", String(speed === 2)); });
+
+/* ---------- tabs & rooms ---------- */
+const tabs = [["t-board", "p-board"], ["t-feed", "p-feed"], ["t-rooms", "p-rooms"]];
+tabs.forEach(([t]) => $(t).addEventListener("click", () => tabs.forEach(([u, p]) => { $(u).setAttribute("aria-selected", String(u === t)); $(p).hidden = u !== t; })));
+["lobby", "ceo", "qs", "meet", "studio", "dev", "train", "lounge", "tower"].forEach(k => {
+  const b = document.createElement("button"); b.type = "button";
+  b.innerHTML = `<img src="${IMG[k][0]}" alt="" loading="lazy"><span>${IMG[k][1]}</span>`;
+  b.addEventListener("click", () => { clearTimeout(shotTimer); if (!vid.hidden) { vid.pause(); vid.hidden = true; } curScene = k; $("roomName").textContent = IMG[k][1]; showImg(IMG[k][0], IMG[k][1]); markShot(0, 0); });
+  $("rooms").appendChild(b);
+});
+
+/* ---------- sample run ---------- */
+const DEMO = [
+  ["order", { msg: "ถอดแบบบ้าน 2 ชั้น ทำ BOQ แผนงาน 6 งวด และสไลด์ ส่งศุกร์นี้" }],
+  ["plan", { msg: "แบ่ง 3 wave: ถอดแบบ → ราคาและแผนงาน → BOQ" }],
+  ["assign", { teams: ["STR", "ARC", "MEP", "PLN"], msg: "Wave A ถอดแบบ + ร่าง WBS" }],
+  ["assign", { teams: ["CNT"], msg: "ทำโพสต์ AI ช่วยถอดแบบ 1 โพสต์" }],
+  ["working", { team: "STR", pct: 35, msg: "อ่านตารางฐานราก เสา คาน" }],
+  ["working", { team: "CNT", pct: 50, msg: "เขียนแคปชันและทำกราฟฟิก" }],
+  ["issue", { team: "MEP", msg: "ท่อน้ำทิ้งชนคาน B2 ชั้น 2", with: ["STR", "ARC"] }],
+  ["meeting_start", { teams: ["STR", "ARC", "MEP"], msg: "MTG-001 ท่อน้ำทิ้งชนคาน B2" }],
+  ["meeting_say", { team: "STR", msg: "เจาะคานตรงนั้นไม่ได้ เสนอย้ายแนวท่อ" }],
+  ["meeting_say", { team: "MEP", msg: "ย้ายท่อไปช่องชาร์ปข้างบันไดได้" }],
+  ["meeting_end", { msg: "ย้ายแนวท่อ + ลดฝ้าห้องน้ำเหลือ 2.40 ม. (+3,200 บาท)" }],
+  ["deliver", { team: "CNT", to: "SEC", msg: "โพสต์ P01 พร้อมภาพ 1080×1350" }],
+  ["approval_request", { team: "CNT", msg: "โพสต์ P01 ตั้งเวลา 19:00" }],
+  ["approved", { team: "CNT", msg: "อนุมัติโพสต์ P01" }],
+  ["published", { team: "CNT", msg: "ตั้งเวลาโพสต์ 19:00 แล้ว" }],
+  ["deliver", { team: "STR", msg: "คอนกรีต 64.2 ลบ.ม. เหล็ก 7.1 ตัน" }],
+  ["deliver", { team: "ARC", msg: "ผนัง 410 ตร.ม. ฉาบ 640 ตร.ม." }],
+  ["review_pass", { team: "STR", msg: "อัตราเหล็ก 110 กก./ลบ.ม. ผ่าน" }],
+  ["review_fail", { team: "ARC", msg: "ฉาบน้อยกว่า 2 เท่าของผนัง ตรวจใหม่" }],
+  ["deliver", { team: "ARC", msg: "แก้แล้ว ฉาบ 820 ตร.ม." }],
+  ["review_pass", { teams: ["ARC", "MEP"], msg: "สถาปัตย์และงานระบบผ่าน" }],
+  ["assign", { teams: ["PUR", "PLN"], msg: "Wave B เช็คราคา + คำนวณระยะเวลา" }],
+  ["working", { team: "PUR", pct: 60, msg: "เทียบราคา 3 ร้าน 86 รายการ" }],
+  ["deliver", { team: "PLN", msg: "180 วัน 6 งวด" }],
+  ["review_pass", { teams: ["PUR", "PLN"], msg: "ราคาและแผนงานผ่าน" }],
+  ["assign", { teams: ["BOQ"], msg: "Wave C ทำ BOQ Excel + สไลด์" }],
+  ["deliver", { team: "BOQ", msg: "BOQ 3.48 ล้านบาท + สไลด์ 12 หน้า" }],
+  ["review_pass", { team: "BOQ", msg: "ยอดตรงทุกชีต" }],
+  ["handover", { msg: "3.48 ล้านบาท · 180 วัน · 6 งวด" }],
+  ["report", { msg: "BOQ 3.48 ล้านบาท พร้อมส่ง ปัญหาท่อชนคานแก้แล้ว (+3,200 บาท)" }],
+  ["done", { msg: "ปิดงานบ้าน 2 ชั้นแล้ว" }],
+];
+let demoOn = false, demoTimer = 0, demoIdx = 0;
+function demoTick() {
+  if (!demoOn) return;
+  if (queue.length > 1) { demoTimer = setTimeout(demoTick, 600); return; }
+  if (demoIdx >= DEMO.length) { demoTimer = setTimeout(() => { if (!demoOn) return; resetBoard(); clearFeed(); demoIdx = 0; demoTick(); }, 8000 / speed); return; }
+  const [type, body] = DEMO[demoIdx++];
+  enqueue(Object.assign({ type, t: new Date().toISOString() }, body));
+  demoTimer = setTimeout(demoTick, 900);
+}
+function startDemo() {
+  demoOn = true; $("b-demo").setAttribute("aria-pressed", "true");
+  $("badge").className = "badge demo"; $("badge").textContent = "ตัวอย่างจำลอง";
+  $("jobTitle").textContent = "ตัวอย่าง: บ้าน 2 ชั้น (ข้อมูลสมมติ)";
+  flush(); resetBoard(); clearFeed(); demoIdx = 0; clearTimeout(demoTimer); demoTick();
+}
+function stopDemo() { demoOn = false; clearTimeout(demoTimer); $("b-demo").setAttribute("aria-pressed", "false"); flush(); }
+$("b-demo").addEventListener("click", () => { if (demoOn) { stopDemo(); restoreLive(); } else startDemo(); });
+
+/* ---------- live data ---------- */
+let live = false, liveEvents = [], lastSeq = -1, liveJob = "";
+function header() {
+  if (!live) { $("badge").className = "badge off"; $("badge").textContent = "ออฟไลน์"; $("jobTitle").textContent = "ไม่ได้เชื่อมต่อข้อมูลสด"; return; }
+  $("badge").className = "badge live"; $("badge").textContent = "LIVE";
+  const o = liveEvents.filter(e => e.job === liveJob).find(e => e.type === "order");
+  $("jobTitle").textContent = liveJob ? (o ? o.title || o.msg : liveJob) : "ยังไม่มีงาน";
+}
+function restoreLive() {
+  resetBoard(); clearFeed(); header();
+  const evs = liveEvents.filter(e => e.job === liveJob);
+  evs.forEach(e => { applyState(e); addFeed(e); });
+  const last = evs[evs.length - 1];
+  if (last) { const [label, tone] = TYPE[last.type] || TYPE.note; showScene(sceneOf(last)); $("chip").textContent = label; $("chip").className = "chip " + tone; $("who").textContent = whoLine(last); $("msg").textContent = last.msg || label; $("quote").textContent = ""; }
+}
+function toEv(doc) {
+  const d = doc.data() || {};
+  const ev = { seq: Number(d.seq) || 0, t: d.t, job: String(d.job || ""), type: String(d.type || "note"), team: d.team ? String(d.team) : "", teams: Array.isArray(d.teams) ? d.teams.map(String) : [], to: d.to ? String(d.to) : "", from: d.from ? String(d.from) : "", msg: d.msg ? String(d.msg) : "", pct: d.pct != null ? Number(d.pct) : null, title: d.title ? String(d.title) : "", with: Array.isArray(d.with) ? d.with.map(String) : [] };
+  if (!TYPE[ev.type]) ev.type = "note";
+  return ev;
+}
+(async function connect() {
+  let db = null;
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { header(); startDemo(); return; }
+  let first = true;
+  const t10 = setTimeout(() => { if (first) { $("badge").className = "badge off"; $("badge").textContent = "ยังเชื่อมต่อไม่ได้"; if (!demoOn) startDemo(); } }, 10000);
+  db.collection("events").orderBy("seq", "desc").limit(300).onSnapshot(snap => {
+    const evs = snap.docs.filter(d => d.exists).map(toEv).sort((a, b) => a.seq - b.seq);
+    if (first) {
+      if (snap.metadata && snap.metadata.fromCache && !evs.length) return;
+      first = false; clearTimeout(t10); live = true;
+      liveEvents = evs; lastSeq = evs.length ? evs[evs.length - 1].seq : -1; liveJob = evs.length ? evs[evs.length - 1].job : "";
+      if (!evs.length) { startDemo(); $("jobTitle").textContent = "ยังไม่มีงานจริง · กำลังเล่นตัวอย่าง"; return; }
+      restoreLive(); return;
+    }
+    const fresh = evs.filter(e => e.seq > lastSeq);
+    if (!fresh.length) return;
+    if (demoOn) { stopDemo(); liveJob = fresh[0].job; restoreLive(); }
+    fresh.forEach(e => {
+      lastSeq = Math.max(lastSeq, e.seq); liveEvents.push(e);
+      if (e.job !== liveJob) { liveJob = e.job; flush(); resetBoard(); clearFeed(); }
+      header(); enqueue(e);
+    });
+    if (liveEvents.length > 400) liveEvents = liveEvents.slice(-300);
+  }, () => { clearTimeout(t10); live = false; header(); if (!demoOn) startDemo(); });
+})();
+})();
+</script>
+
+</body>
+</html>

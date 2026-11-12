@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>COST NINE ชั้น 38</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: an architecture-portfolio book — tower cover beside the title block, then each room as a captioned plate with its zone code and floor area */
+:root {
+  --ground: #f2efe9;
+  --plate: #ffffff;
+  --ink: #1d2226;
+  --muted: #646d72;
+  --rule: #d6d0c5;
+  --brass: #9a6b22;
+  --teal: #0f6f73;
+  --f-display: "Chakra Petch", "IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+  --f-body: "IBM Plex Sans Thai", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ground: #121518; --plate: #1a1f23; --ink: #ebe7df; --muted: #9aa3a8; --rule: #2f363b; --brass: #d9a95b; --teal: #4fc0c3; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --ground: #121518; --plate: #1a1f23; --ink: #ebe7df; --muted: #9aa3a8; --rule: #2f363b; --brass: #d9a95b; --teal: #4fc0c3; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: var(--ground); color: var(--ink); font-family: var(--f-body); font-size: 15.5px; line-height: 1.65;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; line-height: 1.2; text-wrap: balance; }
+p { margin: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); }
+
+/* Cover */
+.cover { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); gap: 32px; align-items: stretch; }
+.cover .text { display: flex; flex-direction: column; gap: 18px; justify-content: center; min-width: 0; }
+.cover h1 { font-size: clamp(36px, 6vw, 68px); font-weight: 700; letter-spacing: 0.01em; }
+.cover h1 span { display: block; font-family: var(--f-body); font-weight: 500; font-size: 0.36em; color: var(--muted); letter-spacing: 0; margin-top: 8px; }
+.cover .lead { max-width: 56ch; color: var(--muted); }
+.spec { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1.5px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.spec div { padding: 12px 12px 12px 0; display: flex; flex-direction: column; gap: 2px; }
+.spec div + div { padding-left: 12px; border-left: 1px solid var(--rule); }
+.spec small { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.spec b { font-family: var(--f-display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+.materials { display: flex; flex-wrap: wrap; gap: 8px; }
+.materials span { font-size: 13px; padding: 3px 10px; border: 1px solid var(--rule); color: var(--muted); }
+.cover figure { margin: 0; min-width: 0; }
+
+/* Plates */
+.plate { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.plate button { padding: 0; border: 0; background: none; cursor: zoom-in; display: block; width: 100%; }
+.plate button:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+.plate img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; background: var(--rule); }
+.cover .plate img { aspect-ratio: 2 / 3; height: 100%; max-height: 760px; }
+.plate figcaption { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: baseline; }
+.plate .code { font-family: var(--f-mono); font-size: 11.5px; color: var(--teal); letter-spacing: 0.08em; }
+.plate h3 { font-size: 18px; font-weight: 600; }
+.plate .area { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.plate p { grid-column: 1 / -1; color: var(--muted); font-size: 14.5px; max-width: 70ch; }
+
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1.5px solid var(--ink); padding-bottom: 10px; margin-bottom: 24px; }
+.sec-h h2 { font-size: 24px; font-weight: 600; }
+.sec-h p { color: var(--muted); font-size: 14px; }
+.feature { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
+
+.note { border-top: 1px solid var(--rule); padding-top: 14px; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+/* Lightbox */
+#lb { position: fixed; inset: 0; z-index: 50; background: rgba(8, 10, 12, 0.94); display: grid; grid-template-rows: 1fr auto; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+#lb img { max-width: 100%; max-height: 100%; object-fit: contain; margin: auto; display: block; min-height: 0; }
+#lb .stage { min-height: 0; display: flex; }
+#lb .bar { display: flex; align-items: center; gap: 12px; color: #ebe7df; padding-top: 10px; flex-wrap: wrap; }
+#lb .bar b { font-family: var(--f-display); font-weight: 600; font-size: 17px; flex: 1 1 200px; min-width: 0; }
+#lb button { background: transparent; color: #ebe7df; border: 1px solid rgba(235, 231, 223, 0.35); font: inherit; font-size: 14px; padding: 6px 14px; cursor: pointer; }
+#lb button:hover, #lb button:focus-visible { border-color: #d9a95b; outline: none; }
+
+@media (max-width: 820px) {
+  .cover { grid-template-columns: 1fr; }
+  .cover .plate img { aspect-ratio: 4 / 5; max-height: none; }
+  .pair { grid-template-columns: 1fr; }
+  .spec { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .spec div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .spec div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+}
+</style>
+
+<div class="wrap">
+  <header class="cover">
+    <div class="text">
+      <span class="eyebrow">Cost Nine Co., Ltd. · Sukhumvit, Bangkok</span>
+      <h1>COST NINE ชั้น 38<span>บริษัท คอสท์ไนน์ จำกัด · ออฟฟิศทีม AI งานประมาณราคาและก่อสร้าง</span></h1>
+      <p class="lead">ภาพจำลองแนวคิดงานตกแต่งภายในของสำนักงานบนตึกกระจกริมถนนสุขุมวิท เหนือแนวรถไฟฟ้า BTS โทนไม้วอลนัท ปูนขัดมัน ทองเหลือง และไฟ LED สีเขียวน้ำทะเล สื่อถึงทีมงานยุค AI</p>
+      <div class="spec">
+        <div><small>ระดับชั้น</small><b>38</b></div>
+        <div><small>พื้นที่</small><b>960 ตร.ม.</b></div>
+        <div><small>ฝ้าสูง</small><b>3.20 ม.</b></div>
+        <div><small>ทีม</small><b>9 ทีม</b></div>
+      </div>
+      <div class="materials" aria-label="วัสดุหลัก">
+        <span>ระแนงไม้วอลนัท</span><span>ปูนขัดมัน</span><span>ตัวอักษรทองเหลือง</span><span>กระจกจากพื้นถึงฝ้า</span><span>LED เส้นเขียวน้ำทะเล</span><span>ผนังต้นไม้</span>
+      </div>
+    </div>
+    <figure class="plate">
+      <button type="button" data-i="0"><img src="img/09-tower.jpg" alt="ตึกสำนักงานกระจกบนถนนสุขุมวิทยามพลบค่ำ มีรถไฟฟ้า BTS วิ่งผ่านด้านหน้า" width="1024" height="1536"></button>
+      <figcaption><span class="code">EXT</span><h3>ตึกบนสุขุมวิท</h3><span class="area">+150 ม.</span></figcaption>
+    </figure>
+  </header>
+
+  <section>
+    <div class="sec-h"><h2>ห้องต่าง ๆ ในออฟฟิศ</h2><p>แตะภาพเพื่อดูเต็มจอ</p></div>
+    <div class="feature">
+      <figure class="plate">
+        <button type="button" data-i="1"><img src="img/01-lobby.jpg" alt="ล็อบบี้ต้อนรับ ผนังระแนงไม้วอลนัทพร้อมโลโก้ทองเหลือง COST NINE และประติมากรรมวงแหวนแสง" width="1536" height="1024"></button>
+        <figcaption><span class="code">LBY</span><h3>ล็อบบี้ต้อนรับ</h3><span class="area">55 ตร.ม.</span>
+          <p>หน้าลิฟต์เป็นผนังระแนงไม้วอลนัทพร้อมโลโก้ทองเหลือง COST NINE ไฟซ่อนด้านบน เคาน์เตอร์ต้อนรับ Solid Surface ท็อปไม้โอ๊ก ข้างกันเป็นประติมากรรมวงแหวนแสงที่สื่อถึงทีม AI</p></figcaption>
+      </figure>
+      <div class="pair">
+        <figure class="plate">
+          <button type="button" data-i="2"><img src="img/02-ceo.jpg" alt="ห้องผู้บริหารมุมตึก กระจกสองด้าน วิวตึกสูงสุขุมวิทยามเย็น" width="1536" height="1024"></button>
+          <figcaption><span class="code">CEO</span><h3>ห้องพี่โสภณ</h3><span class="area">81 ตร.ม.</span>
+            <p>ห้องมุมตึกกระจกสองด้าน โต๊ะไม้วอลนัท จอสรุปโครงการและ S-Curve มุมรับแขกโซฟาหนังสีแทน</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="3"><img src="img/03-qs.jpg" alt="โซนทำงานทีม QS โต๊ะจอคู่ ฉากกั้นสีประจำฝ่าย" width="1536" height="1024"></button>
+          <figcaption><span class="code">QS</span><h3>โซนทีม QS 6 ฝ่าย</h3><span class="area">142 ตร.ม.</span>
+            <p>โต๊ะจอคู่แสดงแบบก่อสร้าง BOQ Gantt และโมเดล BIM ฉากกั้นซับเสียงสีประจำฝ่าย ไฟ LED นำทางบนพื้น</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="4"><img src="img/04-meeting.jpg" alt="ห้องประชุมกระจก โต๊ะวงรี จอแสดงแบบที่ท่อชนคาน" width="1536" height="1024"></button>
+          <figcaption><span class="code">MTG</span><h3>ห้องประชุมแก้ปัญหา</h3><span class="area">59 ตร.ม.</span>
+            <p>โต๊ะไม้โอ๊กวงรี 8 ที่นั่ง จอแสดงจุดที่แบบขัดกันและวาระประชุม แผ่นซับเสียงบนฝ้า</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="5"><img src="img/05-content.jpg" alt="สตูดิโอ Content ฉากหลังสีเขียวเทา ไฟวงแหวน กล้อง และไมค์" width="1536" height="1024"></button>
+          <figcaption><span class="code">CNT</span><h3>สตูดิโอ Content</h3><span class="area">54 ตร.ม.</span>
+            <p>ฉากหลังผ้าสีเขียวเทา ไฟวงแหวน กล้อง ไมค์บูม และโต๊ะจอคู่สำหรับทำกราฟฟิกโพสต์ Facebook</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="6"><img src="img/06-dev.jpg" alt="แล็บทีมเขียนโปรแกรมยามค่ำ จอสามจอ และจอใหญ่แสดงโมเดลบ้าน 3 มิติ" width="1536" height="1024"></button>
+          <figcaption><span class="code">DEV</span><h3>แล็บทีมเขียนโปรแกรม</h3><span class="area">54 ตร.ม.</span>
+            <p>โต๊ะจอสามจอสองชุดสำหรับเว็บแอปและ SketchUp Extension จอใหญ่แสดงโมเดลบ้าน ไฟ LED ม่วงและเขียวน้ำทะเล</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="7"><img src="img/07-training.jpg" alt="ห้องอบรม จอแสดงสไลด์การใช้ AI ถอดปริมาณและทำ BOQ" width="1536" height="1024"></button>
+          <figcaption><span class="code">TRN</span><h3>ห้องอบรม</h3><span class="area">78 ตร.ม.</span>
+            <p>ห้องเรียน 12 ที่นั่ง จอสไลด์ด้านหน้า ผนังระแนงไม้ ใช้ทั้งซ้อมสอนและจัดอบรมจริง</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <button type="button" data-i="8"><img src="img/08-lounge.jpg" alt="แพนทรีและเลานจ์ เคาน์เตอร์ควอตซ์ ผนังต้นไม้ และโซฟา" width="1536" height="1024"></button>
+          <figcaption><span class="code">LNG</span><h3>แพนทรี &amp; Lounge</h3><span class="area">78 ตร.ม.</span>
+            <p>เคาน์เตอร์ควอตซ์ท็อปไม้โอ๊ก เครื่องชงกาแฟ ผนังต้นไม้จริง และโซฟาสำหรับคุยงานแบบสบาย ๆ</p></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">
+    <span>ภาพทั้งหมดเป็นภาพจำลองแนวคิดที่สร้างด้วย AI ใช้เพื่อนำเสนอ ไม่ใช่ภาพถ่ายสถานที่จริงหรือแบบก่อสร้าง</span>
+    <span>พื้นที่ห้องอ้างอิงจากผังออฟฟิศ 3 มิติ ขนาด 40 × 24 ม.</span>
+  </p>
+</div>
+
+<div id="lb" hidden role="dialog" aria-modal="true" aria-label="ดูภาพเต็มจอ">
+  <div class="stage"><img id="lbImg" alt=""></div>
+  <div class="bar">
+    <b id="lbCap"></b>
+    <button type="button" id="lbPrev">ก่อนหน้า</button>
+    <button type="button" id="lbNext">ถัดไป</button>
+    <button type="button" id="lbClose">ปิด</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const items = Array.from(document.querySelectorAll(".plate button")).sort((a, b) => a.dataset.i - b.dataset.i);
+  const lb = document.getElementById("lb"), img = document.getElementById("lbImg"), cap = document.getElementById("lbCap");
+  let cur = 0, opener = null;
+  function show(i) {
+    cur = (i + items.length) % items.length;
+    const src = items[cur].querySelector("img");
+    img.src = src.src; img.alt = src.alt;
+    const fig = items[cur].closest("figure");
+    cap.textContent = fig.querySelector("h3").textContent + " · " + fig.querySelector(".area").textContent;
+  }
+  function open(i, el) { opener = el; show(i); lb.hidden = false; document.getElementById("lbClose").focus(); }
+  function close() { lb.hidden = true; if (opener) opener.focus(); }
+  items.forEach(b => b.addEventListener("click", () => open(+b.dataset.i, b)));
+  document.getElementById("lbPrev").addEventListener("click", () => show(cur - 1));
+  document.getElementById("lbNext").addEventListener("click", () => show(cur + 1));
+  document.getElementById("lbClose").addEventListener("click", close);
+  lb.addEventListener("click", e => { if (e.target === lb || e.target.classList.contains("stage")) close(); });
+  document.addEventListener("keydown", e => {
+    if (lb.hidden) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowRight") show(cur + 1);
+    else if (e.key === "ArrowLeft") show(cur - 1);
+  });
+  let x0 = null;
+  lb.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
+})();
+</script>
+
+</body>
+</html>
