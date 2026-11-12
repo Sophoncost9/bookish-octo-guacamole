@@ -3,837 +3,447 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ออฟฟิศ COST NINE สุขุมวิท</title>
+</head>
+<body>
+<title>COST NINE Live Office</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: full-bleed 3D floor plate of a Sukhumvit high-rise; glass HUD panels float over it (title block top-left, zone directory right, view controls bottom) */
+/* Layout: a live office monitor — the room photo where work is happening fills the stage like a broadcast feed, with a subtitle bar; the team board and activity log sit in a side rail */
 :root {
-  --night: #0b1218;
-  --panel: rgba(13, 22, 29, 0.78);
-  --panel-solid: #0f1a21;
-  --edge: rgba(150, 220, 215, 0.22);
-  --text: #e6f0ef;
-  --muted: #98aeb0;
-  --signal: #3fd6c6;     /* AI teal: lighting, focus */
-  --signal-ink: #062a27;
-  --brass: #d9a95b;      /* COST NINE brand warmth */
+  --ink-bg: #0c1013;
+  --rail: #12181c;
+  --line: #243038;
+  --text: #ecebe6;
+  --muted: #95a3a8;
+  --brass: #d9a95b;
+  --teal: #44cdbf;
+  --ok: #5ccb8c;
+  --warn: #f0a63c;
+  --bad: #ef6b5b;
+  --meet: #ab97ff;
   --f-display: "Chakra Petch", "IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
   --f-body: "IBM Plex Sans Thai", "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: dark;
 }
-html, body { height: 100%; margin: 0; }
-body { background: var(--night); color: var(--text); font-family: var(--f-body); font-size: 14.5px; line-height: 1.55; overflow: hidden; }
-#stage { position: fixed; inset: 0; }
-#stage canvas { display: block; touch-action: none; }
-#labels { position: fixed; inset: 0; pointer-events: none; }
-.hud {
-  position: fixed; z-index: 5; background: var(--panel); border: 1px solid var(--edge);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-}
-.code { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--signal); }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ink-bg); color: var(--text); font-family: var(--f-body); font-size: 14.5px; line-height: 1.55; }
+[hidden] { display: none !important; }
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 370px; }
+.code { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 
-/* Title block */
-#title {
-  top: calc(env(safe-area-inset-top, 0px) + 16px); left: max(16px, env(safe-area-inset-left, 0px));
-  padding: 14px 18px; max-width: min(380px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 4px;
-}
-#title h1 { font-family: var(--f-display); font-weight: 700; font-size: 26px; line-height: 1.15; margin: 0; letter-spacing: 0.02em; }
-#title h1 b { color: var(--brass); font-weight: 700; }
-#title p { margin: 0; color: var(--muted); font-size: 13.5px; }
-#title .facts { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-family: var(--f-mono); font-size: 11.5px; color: var(--text); font-variant-numeric: tabular-nums; }
-#title .facts span { white-space: nowrap; }
-#title .facts i { font-style: normal; color: var(--muted); }
+/* Stage */
+.stage { position: relative; overflow: hidden; background: #000; min-width: 0; }
+.stage .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.1s ease; }
+.stage .ph.on { opacity: 1; animation: drift 14s ease-out forwards; }
+@keyframes drift { from { transform: scale(1.0) translate(0, 0); } to { transform: scale(1.07) translate(-1%, -1%); } }
+.top { position: absolute; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top, 0px) + 16px) 20px 40px max(20px, env(safe-area-inset-left, 0px)); background: linear-gradient(rgba(6, 9, 11, 0.82), transparent); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.brand .code { color: var(--brass); }
+.brand h1 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: 0.02em; }
+.brand h1 b { color: var(--brass); }
+#jobLine { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.badge { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; padding: 2px 8px; border: 1px solid currentColor; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.badge.live { color: var(--bad); } .badge.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--bad); animation: blink 1.4s infinite; }
+.badge.demo { color: var(--brass); } .badge.off { color: var(--muted); }
+@keyframes blink { 50% { opacity: 0.25; } }
+.room { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; background: rgba(6, 9, 11, 0.7); padding: 4px 10px; border: 1px solid rgba(236, 235, 230, 0.2); white-space: nowrap; }
+.sub { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px max(20px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 18px) max(20px, env(safe-area-inset-left, 0px)); background: linear-gradient(transparent, rgba(6, 9, 11, 0.92) 55%); display: flex; flex-direction: column; gap: 6px; }
+.sub .k { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.chip { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 2px 8px; color: #0c1013; background: var(--teal); font-weight: 500; }
+.chip.ok { background: var(--ok); } .chip.warn { background: var(--warn); } .chip.bad { background: var(--bad); } .chip.meet { background: var(--meet); } .chip.brass { background: var(--brass); }
+.sub .who { font-size: 15px; color: #d9dfdc; }
+.sub .msg { font-family: var(--f-display); font-weight: 600; font-size: clamp(20px, 2.6vw, 32px); line-height: 1.3; text-wrap: balance; max-width: 40ch; }
+.sub .quote { font-size: 15px; color: #cfd8d5; max-width: 70ch; min-height: 1.5em; }
+.ctl { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.ctl button { background: rgba(6, 9, 11, 0.6); color: var(--text); border: 1px solid rgba(236, 235, 230, 0.28); font: inherit; font-size: 13px; padding: 6px 12px; cursor: pointer; }
+.ctl button:hover { border-color: var(--teal); }
+.ctl button[aria-pressed="true"] { background: var(--teal); color: #0c1013; border-color: var(--teal); font-weight: 600; }
+button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
-/* Zone directory */
-#dir {
-  top: calc(env(safe-area-inset-top, 0px) + 16px); right: max(16px, env(safe-area-inset-right, 0px));
-  width: 300px; max-height: calc(100% - 140px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-  display: flex; flex-direction: column; overflow: hidden;
-}
-#dir header { padding: 12px 16px 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-#dir header b { font-family: var(--f-display); font-weight: 600; font-size: 16px; }
-#dirToggle { display: none; }
-#zoneList { list-style: none; margin: 0; padding: 0 8px 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
-#zoneList button {
-  width: 100%; text-align: left; background: transparent; border: 1px solid transparent; color: var(--text);
-  font: inherit; padding: 7px 10px; display: grid; grid-template-columns: 1fr auto; gap: 8px; cursor: pointer; align-items: baseline;
-}
-#zoneList button:hover { background: rgba(63, 214, 198, 0.08); }
-#zoneList button[aria-current="true"] { border-color: var(--signal); background: rgba(63, 214, 198, 0.12); }
-#zoneList button:focus-visible, .ctl button:focus-visible, #dirToggle:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
-#zoneList .a { font-family: var(--f-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-#detail { border-top: 1px solid var(--edge); padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; }
-#detail h2 { font-family: var(--f-display); font-weight: 600; font-size: 18px; margin: 0; line-height: 1.3; }
-#detail p { margin: 0; color: var(--muted); font-size: 13.5px; }
-#detail ul { margin: 0; padding-left: 18px; font-size: 13.5px; }
+/* Rail */
+.rail { background: var(--rail); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; min-width: 0; padding-right: env(safe-area-inset-right, 0px); }
+.tabs { display: flex; border-bottom: 1px solid var(--line); flex: none; }
+.tabs button { flex: 1; background: transparent; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: inherit; font-size: 14px; padding: 12px 8px; cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--brass); font-weight: 600; }
+.pane { overflow-y: auto; min-height: 0; flex: 1; }
+#board { list-style: none; margin: 0; padding: 4px 0; }
+#board li { display: grid; grid-template-columns: 10px 1fr auto; gap: 2px 10px; padding: 9px 16px; border-bottom: 1px solid var(--line); align-items: center; }
+#board li.act { background: rgba(68, 205, 191, 0.08); }
+#board .dot { width: 9px; height: 9px; border-radius: 50%; background: #3a464d; }
+#board .nm { font-weight: 600; font-size: 14px; min-width: 0; }
+#board .nm small { font-family: var(--f-mono); font-weight: 500; font-size: 10.5px; color: var(--muted); margin-left: 6px; }
+#board .st { font-size: 12px; color: var(--muted); white-space: nowrap; }
+#board .task { grid-column: 2 / -1; font-size: 12.5px; color: #c3cdcb; overflow-wrap: anywhere; }
+#board .bar { grid-column: 2 / -1; height: 3px; background: #24303a; }
+#board .bar span { display: block; height: 100%; width: 0; background: var(--teal); transition: width .6s ease; }
+#board li[data-st="assigned"] .dot, #board li[data-st="working"] .dot { background: var(--teal); }
+#board li[data-st="working"] .dot { box-shadow: 0 0 8px var(--teal); }
+#board li[data-st="delivered"] .dot, #board li[data-st="pass"] .dot { background: var(--ok); }
+#board li[data-st="pass"] .bar span, #board li[data-st="delivered"] .bar span { background: var(--ok); }
+#board li[data-st="revise"] .dot { background: var(--warn); } #board li[data-st="revise"] .bar span { background: var(--warn); }
+#board li[data-st="issue"] .dot { background: var(--bad); }
+#board li[data-st="meeting"] .dot { background: var(--meet); }
+#feed { list-style: none; margin: 0; padding: 4px 0; }
+#feed li { display: grid; grid-template-columns: 42px 1fr; gap: 1px 8px; padding: 8px 16px; border-left: 3px solid transparent; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+#feed time { font-family: var(--f-mono); font-size: 11px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+#feed .k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--teal); }
+#feed .m { grid-column: 2; overflow-wrap: anywhere; }
+#feed li.c-ok { border-left-color: var(--ok); } #feed li.c-ok .k { color: var(--ok); }
+#feed li.c-warn { border-left-color: var(--warn); } #feed li.c-warn .k { color: var(--warn); }
+#feed li.c-bad { border-left-color: var(--bad); } #feed li.c-bad .k { color: var(--bad); }
+#feed li.c-meet { border-left-color: var(--meet); } #feed li.c-meet .k { color: var(--meet); }
+#feed li.c-brass { border-left-color: var(--brass); } #feed li.c-brass .k { color: var(--brass); }
+#feed li.c-teal { border-left-color: var(--teal); }
+.empty { padding: 16px; color: var(--muted); font-size: 13.5px; }
+#rooms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px; }
+#rooms button { padding: 0; border: 1px solid var(--line); background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+#rooms img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+#rooms span { display: block; padding: 5px 8px; font-size: 12.5px; }
+.note { flex: none; border-top: 1px solid var(--line); padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 8px); font-size: 11.5px; color: var(--muted); }
 
-/* Controls */
-#ctl {
-  left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-  display: flex; gap: 6px; padding: 6px; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 32px);
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .app { display: flex; flex-direction: column; height: auto; }
+  .stage { aspect-ratio: 4 / 5; max-height: 78vh; min-height: 420px; }
+  .brand h1 { font-size: 19px; }
+  .sub .msg { font-size: 20px; }
+  .rail { border-left: 0; border-top: 1px solid var(--line); }
+  .pane { max-height: none; overflow: visible; }
+  .top, .sub { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 }
-.ctl button {
-  background: transparent; color: var(--text); border: 1px solid var(--edge); font: inherit; font-size: 13.5px;
-  padding: 7px 12px; cursor: pointer; white-space: nowrap;
-}
-.ctl button:hover { border-color: var(--signal); }
-.ctl button[aria-pressed="true"] { background: var(--signal); color: var(--signal-ink); border-color: var(--signal); font-weight: 600; }
-.ctl .sep { width: 1px; background: var(--edge); margin: 2px 2px; }
-
-#ticker {
-  left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-  padding: 8px 12px; font-size: 13px; max-width: 300px; display: flex; gap: 8px; align-items: center;
-}
-#ticker .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brass); flex: none; box-shadow: 0 0 10px var(--brass); }
-
-/* 3D labels */
-.lbl {
-  font-family: var(--f-body); font-size: 11.5px; line-height: 1.25; color: var(--text); background: rgba(10, 18, 24, 0.8);
-  border: 1px solid var(--edge); padding: 2px 7px; white-space: nowrap; pointer-events: none; transform: translateY(-4px);
-}
-.lbl b { font-family: var(--f-mono); font-weight: 500; color: var(--signal); margin-right: 5px; font-size: 10.5px; }
-.lbl.zone {
-  font-family: var(--f-display); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; background: rgba(10, 18, 24, 0.86);
-  border-color: var(--signal); pointer-events: auto; cursor: pointer;
-}
-.lbl.walker { border-color: var(--brass); color: var(--brass); }
-.lbl.city { font-family: var(--f-mono); font-size: 11px; color: var(--brass); border-color: rgba(217, 169, 91, 0.4); }
-body.no-labels .lbl:not(.zone):not(.walker) { display: none; }
-
-#fallback { position: fixed; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
-
-@media (max-width: 760px) {
-  #title { padding: 10px 14px; }
-  #title h1 { font-size: 20px; }
-  #title p { display: none; }
-  #dir {
-    top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 66px); left: max(16px, env(safe-area-inset-left, 0px));
-    right: max(16px, env(safe-area-inset-right, 0px)); width: auto; max-height: 52%;
-  }
-  #dir.collapsed #zoneList, #dir.collapsed #detail { display: none; }
-  #dirToggle { display: inline-block; background: transparent; border: 1px solid var(--edge); color: var(--text); font: inherit; font-size: 12.5px; padding: 3px 10px; cursor: pointer; }
-  #ticker { display: none; }
-  #ctl { bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); }
-  .ctl button { padding: 6px 9px; font-size: 12.5px; }
-}
+@media (prefers-reduced-motion: reduce) { .stage .ph.on { animation: none; } .stage .ph { transition: none; } .badge.live::before { animation: none; } }
 </style>
-</head>
-<body>
 
-<div id="stage" aria-label="แบบจำลอง 3 มิติ ออฟฟิศ COST NINE"></div>
-<div id="labels"></div>
+<div class="app">
+  <main class="stage" aria-label="ภาพห้องที่กำลังมีงานเกิดขึ้น">
+    <img class="ph on" id="phA" src="img/09-tower.jpg" alt="ตึก COST NINE บนถนนสุขุมวิท">
+    <img class="ph" id="phB" alt="">
+    <div class="top">
+      <div class="brand">
+        <span class="code">Cost Nine Co., Ltd. · Sukhumvit ชั้น 38</span>
+        <h1><b>COST NINE</b> Live Office</h1>
+        <div id="jobLine"><span id="badge" class="badge off">กำลังเชื่อมต่อ</span><span id="jobTitle">กำลังโหลดงาน…</span></div>
+      </div>
+      <span class="room" id="roomName">ตึก COST NINE</span>
+    </div>
+    <div class="sub" aria-live="polite">
+      <div class="k"><span class="chip brass" id="chip">พร้อมทำงาน</span><span class="who" id="who">บริษัท คอสท์ไนน์ จำกัด</span></div>
+      <div class="msg" id="msg">ออฟฟิศชั้น 38 ใจกลางสุขุมวิท</div>
+      <div class="quote" id="quote"></div>
+      <div class="ctl">
+        <button type="button" id="b-pause" aria-pressed="false">หยุดภาพ</button>
+        <button type="button" id="b-speed" aria-pressed="false">เร็ว 2×</button>
+        <button type="button" id="b-demo" aria-pressed="false">ดูตัวอย่าง</button>
+      </div>
+    </div>
+  </main>
 
-<section id="title" class="hud">
-  <span class="code">Cost Nine Co., Ltd. · Sukhumvit</span>
-  <h1><b>COST NINE</b> สำนักงานชั้น 38</h1>
-  <p>บริษัท คอสท์ไนน์ จำกัด ออฟฟิศทีมงาน AI งานประมาณราคาและก่อสร้าง บนตึกสูงใจกลางสุขุมวิท ลากเพื่อหมุน ซูมด้วยล้อเมาส์หรือสองนิ้ว</p>
-  <div class="facts">
-    <span><i>พื้นที่</i> 960 ตร.ม.</span>
-    <span><i>ฝ้าสูง</i> 3.20 ม.</span>
-    <span><i>ระดับ</i> +150 ม.</span>
-    <span><i>ทีม</i> 9 ทีม</span>
-  </div>
-</section>
+  <aside class="rail">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="t-board" aria-selected="true">ทีมงาน</button>
+      <button type="button" role="tab" id="t-feed" aria-selected="false">ความเคลื่อนไหว</button>
+      <button type="button" role="tab" id="t-rooms" aria-selected="false">ห้อง</button>
+    </div>
+    <div class="pane" id="p-board"><ul id="board"></ul></div>
+    <div class="pane" id="p-feed" hidden><ul id="feed"></ul><p class="empty" id="feedEmpty">ยังไม่มีความเคลื่อนไหว</p></div>
+    <div class="pane" id="p-rooms" hidden><div id="rooms"></div></div>
+    <p class="note">ภาพในออฟฟิศเป็นภาพจำลองที่สร้างด้วย AI ใช้แสดงจังหวะการทำงานของทีม ไม่ใช่ภาพถ่ายบุคคลหรือสถานที่จริง · <a href="gallery.html" style="color:var(--brass)">ภาพห้องทั้งหมด</a> · <a href="3d.html" style="color:var(--brass)">ผัง 3 มิติ</a></p>
+  </aside>
+</div>
 
-<aside id="dir" class="hud">
-  <header><b>โซนในออฟฟิศ</b><button id="dirToggle" type="button" aria-expanded="true">ซ่อน</button></header>
-  <ul id="zoneList"></ul>
-  <div id="detail" aria-live="polite"></div>
-</aside>
-
-<div id="ticker" class="hud" aria-live="polite"><span class="dot"></span><span id="tickerText">กำลังเตรียมออฟฟิศ…</span></div>
-
-<nav id="ctl" class="hud ctl" aria-label="มุมมอง">
-  <button type="button" id="b-overview">ภาพรวม</button>
-  <button type="button" id="b-city">วิวสุขุมวิท</button>
-  <span class="sep" aria-hidden="true"></span>
-  <button type="button" id="b-day" aria-pressed="false">กลางวัน</button>
-  <button type="button" id="b-night" aria-pressed="false">กลางคืน</button>
-  <span class="sep" aria-hidden="true"></span>
-  <button type="button" id="b-labels" aria-pressed="true">ป้ายชื่อ</button>
-  <button type="button" id="b-walk" aria-pressed="true">เดินส่งงาน</button>
-</nav>
-
-<div id="fallback" hidden>เบราว์เซอร์นี้แสดงภาพ 3 มิติ (WebGL) ไม่ได้ ลองเปิดด้วย Chrome, Edge หรือ Safari รุ่นล่าสุด</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 <script>
 (function () {
 "use strict";
-const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const stage = document.getElementById("stage");
-const labelsEl = document.getElementById("labels");
-const tickerText = document.getElementById("tickerText");
-
-if (!window.THREE || !window.WebGLRenderingContext) { document.getElementById("fallback").hidden = false; return; }
-let renderer;
-try {
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-} catch (e) { document.getElementById("fallback").hidden = false; return; }
-
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-renderer.setSize(stage.clientWidth, stage.clientHeight);
-renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-stage.appendChild(renderer.domElement);
-
-const labelRenderer = new THREE.CSS2DRenderer();
-labelRenderer.setSize(stage.clientWidth, stage.clientHeight);
-labelsEl.appendChild(labelRenderer.domElement);
-
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(48, stage.clientWidth / stage.clientHeight, 0.1, 2500);
-camera.position.set(30, 30, 34);
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 0.5, 0);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.maxPolarAngle = Math.PI * 0.495;
-controls.minDistance = 3;
-controls.maxDistance = 160;
-
-/* ---------- materials ---------- */
-const M = (c, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.6, metalness: 0.0 }, o));
-const mat = {
-  floor: M(0x30353a, { roughness: 0.28, metalness: 0.15 }),
-  carpet: M(0x3a4148, { roughness: 0.95 }),
-  carpetTeal: M(0x23464a, { roughness: 0.95 }),
-  carpetWarm: M(0x4a3e34, { roughness: 0.95 }),
-  wood: M(0xb88a5d, { roughness: 0.55 }),
-  woodDark: M(0x6e4c32, { roughness: 0.6 }),
-  white: M(0xe8ecee, { roughness: 0.4 }),
-  black: M(0x1b1f23, { roughness: 0.45, metalness: 0.3 }),
-  steel: M(0x8a949c, { roughness: 0.3, metalness: 0.8 }),
-  concrete: M(0x8d9294, { roughness: 0.9 }),
-  fabric: M(0x55606a, { roughness: 0.95 }),
-  fabricWarm: M(0x9a7552, { roughness: 0.95 }),
-  leaf: M(0x3e7a48, { roughness: 0.8 }),
-  leafDark: M(0x2c5c36, { roughness: 0.8 }),
-  pot: M(0xd8d2c8, { roughness: 0.7 }),
-  glass: new THREE.MeshStandardMaterial({ color: 0x9fd4dc, transparent: true, opacity: 0.16, roughness: 0.05, metalness: 0.2, depthWrite: false, side: THREE.DoubleSide }),
-  curtain: new THREE.MeshStandardMaterial({ color: 0xa7c9d6, transparent: true, opacity: 0.12, roughness: 0.05, metalness: 0.3, depthWrite: false, side: THREE.DoubleSide }),
-  led: new THREE.MeshStandardMaterial({ color: 0x0c1b1d, emissive: 0x3fd6c6, emissiveIntensity: 1.2 }),
-  ledWarm: new THREE.MeshStandardMaterial({ color: 0x1d160c, emissive: 0xffd9a0, emissiveIntensity: 0.8 }),
-  ledViolet: new THREE.MeshStandardMaterial({ color: 0x120c1d, emissive: 0x8f7cff, emissiveIntensity: 1.0 }),
+const IMG = {
+  tower: ["img/09-tower.jpg", "ตึก COST NINE สุขุมวิท"], lobby: ["img/01-lobby.jpg", "ล็อบบี้ต้อนรับ"], ceo: ["img/02-ceo.jpg", "ห้องพี่โสภณ"],
+  qs: ["img/03-qs.jpg", "โซนทีม QS"], meet: ["img/04-meeting.jpg", "ห้องประชุมแก้ปัญหา"], studio: ["img/05-content.jpg", "สตูดิโอ Content"],
+  dev: ["img/06-dev.jpg", "แล็บทีมเขียนโปรแกรม"], train: ["img/07-training.jpg", "ห้องอบรม"], lounge: ["img/08-lounge.jpg", "แพนทรี & Lounge"],
+  order: ["img/s-order.jpg", "ห้องพี่โสภณ"], assign: ["img/s-assign.jpg", "โต๊ะหัวหน้าทีม"], working: ["img/s-working.jpg", "โซนทีม QS"],
+  deliver: ["img/s-deliver.jpg", "โต๊ะหัวหน้าทีม"], revise: ["img/s-revise.jpg", "โซนทีม QS"], issue: ["img/s-issue.jpg", "โต๊ะเลขา"],
+  agree: ["img/s-agree.jpg", "ห้องประชุมแก้ปัญหา"], report: ["img/s-report.jpg", "ห้องพี่โสภณ"], approve: ["img/s-approve.jpg", "ห้องพี่โสภณ"],
+  content: ["img/s-content.jpg", "สตูดิโอ Content"], handover: ["img/s-handover.jpg", "โต๊ะเลขา"],
 };
-mat.floor.envMapIntensity = 1;
+Object.values(IMG).forEach(([s]) => { const i = new Image(); i.src = s; });
 
-function box(w, h, d, m, x, y, z, parent) {
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
-  mesh.position.set(x, y + h / 2, z);
-  mesh.castShadow = true; mesh.receiveShadow = true;
-  (parent || scene).add(mesh);
-  return mesh;
-}
-function cyl(rt, rb, h, m, x, y, z, parent, seg) {
-  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 24), m);
-  mesh.position.set(x, y + h / 2, z);
-  mesh.castShadow = true; mesh.receiveShadow = true;
-  (parent || scene).add(mesh);
-  return mesh;
-}
-function label(text, x, y, z, cls, code, parent) {
-  const el = document.createElement("div");
-  el.className = "lbl" + (cls ? " " + cls : "");
-  el.innerHTML = (code ? `<b>${code}</b>` : "") + text;
-  const obj = new THREE.CSS2DObject(el);
-  obj.position.set(x, y, z);
-  (parent || scene).add(obj);
-  return { obj, el };
-}
-
-/* ---------- canvas screens ---------- */
-const FONT = '"IBM Plex Sans Thai", "Leelawadee UI", Tahoma, sans-serif';
-const MONO = '"IBM Plex Mono", Menlo, monospace';
-function screenTex(kind, title, accent, w = 512, h = 300) {
-  const c = document.createElement("canvas"); c.width = w; c.height = h;
-  const g = c.getContext("2d");
-  g.fillStyle = "#0d171c"; g.fillRect(0, 0, w, h);
-  g.fillStyle = accent; g.fillRect(0, 0, w, 6);
-  g.fillStyle = "#e6f0ef"; g.font = `600 ${Math.round(h * 0.085)}px ${FONT}`; g.textBaseline = "top";
-  g.fillText(title, w * 0.05, h * 0.07);
-  const top = h * 0.25, L = w * 0.05, R = w * 0.95, B = h * 0.92;
-  g.strokeStyle = "rgba(230,240,239,0.08)"; g.lineWidth = 1;
-  for (let i = 0; i < 4; i++) { const y = top + (B - top) * i / 3; g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); }
-  g.fillStyle = accent; g.strokeStyle = accent;
-  const rnd = mulberry(title.length * 97 + kind.length);
-  if (kind === "bars") {
-    const n = 7, bw = (R - L) / n * 0.6;
-    for (let i = 0; i < n; i++) { const v = 0.3 + rnd() * 0.65; const x = L + (R - L) * i / n + bw * 0.3; g.globalAlpha = i === n - 2 ? 1 : 0.55; g.fillRect(x, B - (B - top) * v, bw, (B - top) * v); }
-    g.globalAlpha = 1;
-  } else if (kind === "line") {
-    g.lineWidth = 3; g.beginPath();
-    for (let i = 0; i <= 20; i++) { const t = i / 20; const v = 1 / (1 + Math.exp(-10 * (t - 0.5))); const x = L + (R - L) * t, y = B - (B - top) * v * 0.95; i ? g.lineTo(x, y) : g.moveTo(x, y); }
-    g.stroke(); g.lineTo(R, B); g.lineTo(L, B); g.globalAlpha = 0.15; g.fill(); g.globalAlpha = 1;
-  } else if (kind === "gantt") {
-    for (let i = 0; i < 7; i++) { const s = i * 0.11 + rnd() * 0.05, d = 0.18 + rnd() * 0.2; g.globalAlpha = i === 3 ? 1 : 0.6; g.fillRect(L + (R - L) * s, top + i * (B - top) / 7 + 3, (R - L) * d, (B - top) / 7 - 8); }
-    g.globalAlpha = 1;
-  } else if (kind === "list" || kind === "table") {
-    g.font = `500 ${Math.round(h * 0.06)}px ${FONT}`;
-    const rows = title.indexOf("เลขา") >= 0 ? ["STR ถอดแบบ 80%", "ARC ถอดแบบ 65%", "MEP ถอดแบบ 70%", "MTG-001 ได้มติแล้ว", "รอพี่โสภณอนุมัติ 2 โพสต์"] :
-      kind === "table" ? ["CONC-240   2,350 ฿", "STEEL-DB12   24.5 ฿", "BRICK-LIGHT   21 ฿", "PVC-1/2   38 ฿", "AC-12000   15,900 ฿"] :
-      ["✓ STR ผ่าน", "✓ ARC ผ่าน", "! MEP แก้ 2 รายการ", "✓ มติ MTG-001", "→ ส่ง wave B"];
-    rows.forEach((r, i) => { g.fillStyle = i === 2 ? accent : "rgba(230,240,239,0.82)"; g.fillText(r, L, top + 6 + i * (B - top) / 5.2); });
-  } else if (kind === "code") {
-    g.font = `500 ${Math.round(h * 0.055)}px ${MONO}`;
-    ["module PHISO::WallTakeoff", "  def self.area(face)", "    face.area * IN2_TO_M2", "  end", "end", "# 42 passed, 0 failed"].forEach((r, i) => { g.fillStyle = i === 5 ? accent : "rgba(230,240,239,0.8)"; g.fillText(r, L, top + 4 + i * (B - top) / 6.2); });
-  } else if (kind === "model") {
-    g.lineWidth = 2; const cx = w / 2, cy = (top + B) / 2 + 10, s = (B - top) * 0.36;
-    const P = (x, y, z) => [cx + (x - z) * s * 0.87, cy + (x + z) * s * 0.5 - y * s];
-    const E = [[[-1,0,-1],[1,0,-1]],[[1,0,-1],[1,0,1]],[[1,0,1],[-1,0,1]],[[-1,0,1],[-1,0,-1]],[[-1,1,-1],[1,1,-1]],[[1,1,-1],[1,1,1]],[[1,1,1],[-1,1,1]],[[-1,1,1],[-1,1,-1]],[[-1,0,-1],[-1,1,-1]],[[1,0,-1],[1,1,-1]],[[1,0,1],[1,1,1]],[[-1,0,1],[-1,1,1]],[[-1,1,-1],[0,1.7,-1]],[[1,1,-1],[0,1.7,-1]],[[-1,1,1],[0,1.7,1]],[[1,1,1],[0,1.7,1]],[[0,1.7,-1],[0,1.7,1]]];
-    E.forEach(([a, b]) => { const p = P(...a), q = P(...b); g.beginPath(); g.moveTo(p[0], p[1]); g.lineTo(q[0], q[1]); g.stroke(); });
-  } else if (kind === "post") {
-    g.fillStyle = "#1c2a31"; g.fillRect(L, top, (R - L) * 0.42, B - top);
-    g.fillStyle = accent; g.font = `700 ${Math.round(h * 0.09)}px ${FONT}`; g.fillText("AI", L + 14, top + 14);
-    g.font = `600 ${Math.round(h * 0.06)}px ${FONT}`; g.fillText("ถอดแบบ", L + 14, top + 14 + h * 0.1); g.fillText("ใน 5 นาที", L + 14, top + 14 + h * 0.18);
-    g.fillStyle = "rgba(230,240,239,0.8)"; g.font = `500 ${Math.round(h * 0.052)}px ${FONT}`;
-    ["รออนุมัติ: P03", "ตั้งเวลา 19:00", "เลขาตรวจแล้ว ✓"].forEach((r, i) => g.fillText(r, L + (R - L) * 0.5, top + 8 + i * (B - top) / 3.4));
-  } else if (kind === "slide") {
-    g.fillStyle = "rgba(230,240,239,0.85)"; g.font = `600 ${Math.round(h * 0.075)}px ${FONT}`;
-    g.fillText("หลักสูตร AI ถอดแบบ BOQ", L, top + 8);
-    g.font = `500 ${Math.round(h * 0.055)}px ${FONT}`;
-    ["1. อ่านแบบ PDF ด้วย AI", "2. ถอดปริมาณเป็น Backup", "3. ลิงก์ราคา → BOQ Excel"].forEach((r, i) => g.fillText(r, L, top + h * 0.16 + i * h * 0.11));
-  } else if (kind === "logo") {
-    g.fillStyle = "#14100b"; g.fillRect(0, 0, w, h);
-    g.fillStyle = "#d9a95b"; g.font = `700 ${Math.round(h * 0.3)}px "Chakra Petch", ${FONT}`; g.textAlign = "center"; g.textBaseline = "middle";
-    g.fillText("COST NINE", w / 2, h * 0.44);
-    g.fillStyle = "rgba(240,230,215,0.85)"; g.font = `500 ${Math.round(h * 0.1)}px ${FONT}`;
-    g.fillText("บริษัท คอสท์ไนน์ จำกัด", w / 2, h * 0.74);
-  }
-  const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 4;
-  return t;
-}
-function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-function screenMat(kind, title, accent, w, h) {
-  return new THREE.MeshStandardMaterial({ map: screenTex(kind, title, accent, w, h), emissive: 0xffffff, emissiveMap: null, emissiveIntensity: 0, roughness: 0.3, color: 0xffffff, toneMapped: true });
-}
-const screenMats = [];
-function screen(kind, title, accent, w, h, x, y, z, rotY, parent, px) {
-  const sm = screenMat(kind, title, accent, px ? px[0] : 512, px ? px[1] : 300);
-  sm.emissiveMap = sm.map; sm.emissiveIntensity = 0.85; screenMats.push(sm);
-  const frame = new THREE.Mesh(new THREE.BoxGeometry(w + 0.06, h + 0.06, 0.04), mat.black);
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sm);
-  plane.position.z = 0.025;
-  const grp = new THREE.Group(); grp.add(frame); grp.add(plane);
-  grp.position.set(x, y, z); grp.rotation.y = rotY || 0;
-  (parent || scene).add(grp);
-  return grp;
-}
-
-/* ---------- furniture ---------- */
-const avatars = [];
-function chair(parent, x, z, rot, m) {
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot || 0; parent.add(g);
-  cyl(0.03, 0.03, 0.42, mat.steel, 0, 0, 0, g, 8);
-  cyl(0.28, 0.28, 0.03, mat.black, 0, 0.02, 0, g, 5);
-  box(0.5, 0.08, 0.48, m || mat.fabric, 0, 0.42, 0, g);
-  box(0.48, 0.55, 0.07, m || mat.fabric, 0, 0.5, 0.24, g);
-  return g;
-}
-function person(parent, x, z, rot, color, sitting) {
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot || 0; parent.add(g);
-  const cloth = M(color, { roughness: 0.8 });
-  const skin = M(0xd9b38c, { roughness: 0.7 });
-  const base = sitting ? 0.5 : 0;
-  if (!sitting) { box(0.12, 0.8, 0.14, mat.black, -0.09, 0, 0, g); box(0.12, 0.8, 0.14, mat.black, 0.09, 0, 0, g); }
-  else { box(0.34, 0.12, 0.42, mat.black, 0, 0.42, -0.12, g); }
-  const torso = cyl(0.17, 0.2, 0.62, cloth, 0, base + (sitting ? 0 : 0.8), 0, g, 16);
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.13, 20, 16), skin);
-  head.position.set(0, base + (sitting ? 0.78 : 1.58), 0); head.castShadow = true; g.add(head);
-  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.135, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.5), mat.black);
-  hair.position.copy(head.position); hair.position.y += 0.015; g.add(hair);
-  avatars.push({ g, head, torso, phase: Math.random() * Math.PI * 2 });
-  return g;
-}
-function desk(x, z, rot, opts) {
-  const o = Object.assign({ w: 1.6, d: 0.8, monitors: 1, kind: "bars", title: "", accent: "#3fd6c6", who: null, code: "", color: 0x3c6e8f, top: mat.wood, divider: null }, opts);
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot || 0; scene.add(g);
-  box(o.w, 0.04, o.d, o.top, 0, 0.72, 0, g);
-  [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => box(0.04, 0.72, 0.04, mat.black, a * (o.w / 2 - 0.05), 0, b * (o.d / 2 - 0.05), g));
-  if (o.divider) { box(o.w, 0.5, 0.04, o.divider, 0, 0.76, -o.d / 2 + 0.02, g); }
-  const mw = o.monitors > 1 ? 0.58 : 0.66;
-  for (let i = 0; i < o.monitors; i++) {
-    const off = (i - (o.monitors - 1) / 2) * (mw + 0.04);
-    box(0.05, 0.22, 0.05, mat.black, off, 0.76, -o.d / 2 + 0.16, g);
-    screen(i === 0 ? o.kind : (o.kind2 || "line"), o.title, o.accent, mw, mw * 0.58, off, 1.12, -o.d / 2 + 0.14, (i - (o.monitors - 1) / 2) * -0.18, g, [256, 150]);
-  }
-  box(0.42, 0.02, 0.14, mat.black, 0, 0.76, 0.05, g);
-  chair(g, 0, o.d / 2 + 0.32, 0);
-  if (o.who) {
-    person(g, 0, o.d / 2 + 0.34, 0, o.color, true);
-    const lp = new THREE.Vector3(0, 1.75, o.d / 2 + 0.34);
-    label(o.who, lp.x, lp.y, lp.z, "", o.code, g);
-  }
-  return g;
-}
-function plant(x, z, s = 1, tall) {
-  const g = new THREE.Group(); g.position.set(x, 0, z); scene.add(g);
-  cyl(0.2 * s, 0.16 * s, 0.42 * s, mat.pot, 0, 0, 0, g, 18);
-  const n = tall ? 6 : 4;
-  for (let i = 0; i < n; i++) {
-    const leaf = new THREE.Mesh(new THREE.IcosahedronGeometry((tall ? 0.28 : 0.32) * s, 0), i % 2 ? mat.leaf : mat.leafDark);
-    const a = i / n * Math.PI * 2;
-    leaf.position.set(Math.cos(a) * 0.12 * s, (0.6 + (tall ? i * 0.22 : (i % 2) * 0.15)) * s, Math.sin(a) * 0.12 * s);
-    leaf.castShadow = true; g.add(leaf);
-  }
-  return g;
-}
-function sofa(x, z, rot, w, m) {
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot || 0; scene.add(g);
-  box(w, 0.42, 0.85, m || mat.fabric, 0, 0, 0, g);
-  box(w, 0.42, 0.2, m || mat.fabric, 0, 0.42, 0.33, g);
-  box(0.18, 0.25, 0.85, m || mat.fabric, -w / 2 + 0.09, 0.42, 0, g);
-  box(0.18, 0.25, 0.85, m || mat.fabric, w / 2 - 0.09, 0.42, 0, g);
-  return g;
-}
-function glassWall(x1, z1, x2, z2, gaps) {
-  // straight wall along x or z with optional door gaps [[from,to]]
-  const alongX = Math.abs(z1 - z2) < 1e-6;
-  const a = alongX ? Math.min(x1, x2) : Math.min(z1, z2), b = alongX ? Math.max(x1, x2) : Math.max(z1, z2);
-  const segs = []; let s = a;
-  (gaps || []).slice().sort((p, q) => p[0] - q[0]).forEach(([g1, g2]) => { if (g1 > s) segs.push([s, g1]); s = g2; });
-  if (s < b) segs.push([s, b]);
-  segs.forEach(([p, q]) => {
-    const len = q - p, mid = (p + q) / 2;
-    const w = new THREE.Mesh(new THREE.PlaneGeometry(len, 2.9), mat.glass);
-    if (alongX) { w.position.set(mid, 1.45, z1); } else { w.position.set(x1, 1.45, mid); w.rotation.y = Math.PI / 2; }
-    scene.add(w);
-    if (alongX) { box(len, 0.05, 0.06, mat.black, mid, 2.88, z1); box(len, 0.05, 0.06, mat.black, mid, 0, z1); }
-    else { box(0.06, 0.05, len, mat.black, x1, 2.88, mid); box(0.06, 0.05, len, mat.black, x1, 0, mid); }
-    // frosted manifestation band
-    const band = new THREE.Mesh(new THREE.PlaneGeometry(len, 0.18), new THREE.MeshStandardMaterial({ color: 0xdfeeee, transparent: true, opacity: 0.35, depthWrite: false, side: THREE.DoubleSide }));
-    if (alongX) band.position.set(mid, 1.1, z1 + 0.002); else { band.position.set(x1 + 0.002, 1.1, mid); band.rotation.y = Math.PI / 2; }
-    scene.add(band);
-  });
-}
-function rug(x1, x2, z1, z2, m) {
-  const r = new THREE.Mesh(new THREE.BoxGeometry(x2 - x1, 0.02, z2 - z1), m);
-  r.position.set((x1 + x2) / 2, 0.01, (z1 + z2) / 2); r.receiveShadow = true; scene.add(r);
-}
-
-/* ---------- building shell (floor 38, x -20..20, z -12..12) ---------- */
-const FW = 40, FD = 24, CH = 3.2;
-box(FW + 0.6, 0.3, FD + 0.6, mat.floor, 0, -0.3, 0).castShadow = false;
-// curtain wall + mullions
-[[0, -FD / 2, FW, 0], [0, FD / 2, FW, 0], [-FW / 2, 0, FD, Math.PI / 2], [FW / 2, 0, FD, Math.PI / 2]].forEach(([x, z, len, r]) => {
-  const p = new THREE.Mesh(new THREE.PlaneGeometry(len, CH), mat.curtain); p.position.set(x, CH / 2, z); p.rotation.y = r; scene.add(p);
-});
-(function mullions() {
-  const pts = [];
-  for (let x = -FW / 2; x <= FW / 2 + 1e-6; x += 1.5) { pts.push([x, -FD / 2]); pts.push([x, FD / 2]); }
-  for (let z = -FD / 2 + 1.5; z < FD / 2; z += 1.5) { pts.push([-FW / 2, z]); pts.push([FW / 2, z]); }
-  const inst = new THREE.InstancedMesh(new THREE.BoxGeometry(0.06, CH, 0.12), mat.black, pts.length);
-  const m4 = new THREE.Matrix4();
-  pts.forEach(([x, z], i) => { m4.makeTranslation(x, CH / 2, z); inst.setMatrixAt(i, m4); });
-  inst.castShadow = true; scene.add(inst);
-  [[0, -FD / 2, FW + 0.1, 0.14], [0, FD / 2, FW + 0.1, 0.14]].forEach(([x, z, w, d]) => box(w, 0.1, d, mat.black, x, CH - 0.05, z));
-  [[-FW / 2, 0], [FW / 2, 0]].forEach(([x, z]) => box(0.14, 0.1, FD, mat.black, x, CH - 0.05, z));
-})();
-// floating ceiling LED lines (cut-away ceiling)
-const ceilingLeds = [];
-for (let i = -3; i <= 3; i++) ceilingLeds.push(box(0.08, 0.04, 20, i % 3 === 0 ? mat.led : mat.ledWarm, i * 5 + 1.5, CH - 0.25, 0.5));
-
-// core: lifts + services
-box(6, CH, 10, mat.concrete, -17, 0, 0);
-for (const z of [-3.3, 3.3]) {
-  box(0.04, 2.3, 1.2, mat.steel, -13.98, 0, z - 0.7); box(0.04, 2.3, 1.2, mat.steel, -13.98, 0, z + 0.7);
-  box(0.03, 0.06, 0.3, mat.ledWarm, -13.97, 2.45, z);
-}
-// logo wall on core (reception backdrop)
-for (let i = 0; i < 26; i++) box(0.08, CH - 0.2, 0.12, mat.woodDark, -13.92, 0, -2.4 + i * 0.19);
-const logo = screen("logo", "", "#d9a95b", 3.4, 1.15, -13.82, 1.75, 0, Math.PI / 2, null, [768, 260]);
-box(0.04, 0.04, 4.4, mat.ledWarm, -13.86, 1.0, 0);
-// green wall on core south face
-for (let i = 0; i < 9; i++) for (let j = 0; j < 4; j++) {
-  const l = new THREE.Mesh(new THREE.IcosahedronGeometry(0.42, 0), (i + j) % 2 ? mat.leaf : mat.leafDark);
-  l.position.set(-19.4 + i * 0.68, 0.5 + j * 0.65, 5.15); l.scale.z = 0.5; scene.add(l);
-}
-
-/* ---------- zones ---------- */
-// Reception & AI sculpture
-rug(-13.6, -7.5, -4.5, 4.5, mat.carpetWarm);
-(function reception() {
-  const g = new THREE.Group(); g.position.set(-10.6, 0, 0); scene.add(g);
-  box(0.8, 1.05, 3.4, mat.white, 0, 0, 0, g);
-  box(0.9, 0.05, 3.5, mat.wood, 0, 1.05, 0, g);
-  box(0.02, 0.04, 3.2, mat.led, 0.41, 0.1, 0, g);
-  person(g, -0.8, 0.6, Math.PI / 2, 0x2b5f75, true);
-  label("ต้อนรับ", -0.8, 1.6, 0.6, "", "LBY", g);
-})();
-const aiCore = new THREE.Group(); aiCore.position.set(-8.6, 0, -3.2); scene.add(aiCore);
-cyl(0.55, 0.65, 0.35, mat.black, 0, 0, 0, aiCore);
-const rings = [];
-[1.0, 0.78, 0.56].forEach((r, i) => {
-  const t = new THREE.Mesh(new THREE.TorusGeometry(r, 0.03, 12, 80), i === 1 ? mat.ledViolet : mat.led);
-  t.position.y = 1.5; t.rotation.x = Math.PI / 2 + i * 0.6; t.rotation.y = i * 0.9; aiCore.add(t); rings.push(t);
-});
-const orb = new THREE.Mesh(new THREE.SphereGeometry(0.22, 32, 16), new THREE.MeshStandardMaterial({ color: 0x0b1c1d, emissive: 0x7ff3e6, emissiveIntensity: 1.5 }));
-orb.position.y = 1.5; aiCore.add(orb);
-const aiLight = new THREE.PointLight(0x5fe8d8, 1.2, 9, 2); aiLight.position.set(0, 1.6, 0); aiCore.add(aiLight);
-sofa(-9.5, 3.4, Math.PI, 2.2, mat.fabricWarm);
-plant(-13.2, 4.2, 1.2, true); plant(-13.2, -4.2, 1.2, true);
-
-// Training room x[-20,-8] z[-12,-5.5]
-glassWall(-14, -5.5, -8, -5.5, [[-10, -8.9]]);
-glassWall(-8, -12, -8, -5.5);
-rug(-19.6, -8.4, -11.6, -5.9, mat.carpet);
-screen("slide", "ห้องอบรม", "#d9a95b", 2.6, 1.46, -19.2, 1.6, -8.8, Math.PI / 2);
-box(0.3, 0.75, 1.2, mat.black, -18.6, 0, -8.8);
-for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) {
-  const x = -16.6 + r * 2.4, z = -10.3 + c * 3.0;
-  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = Math.PI / 2; scene.add(g);
-  box(2.2, 0.04, 0.6, mat.white, 0, 0.72, 0, g);
-  box(0.04, 0.72, 0.5, mat.black, -1.0, 0, 0, g); box(0.04, 0.72, 0.5, mat.black, 1.0, 0, 0, g);
-  chair(g, -0.5, 0.55, 0); chair(g, 0.5, 0.55, 0);
-}
-person(scene, -18.2, -7.0, -Math.PI / 2, 0xd9a95b, false);
-
-// Pantry & lounge x[-20,-8] z[5.5,12]
-rug(-19.6, -8.4, 5.8, 11.6, mat.carpetWarm);
-box(0.7, 0.92, 4.2, mat.white, -19.3, 0, 8.5); box(0.75, 0.04, 4.3, mat.wood, -19.3, 0.92, 8.5);
-box(0.5, 1.6, 4.2, mat.woodDark, -19.75, 0.92, 8.5);
-box(2.6, 0.95, 0.6, mat.white, -15.8, 0, 7.0); box(2.7, 0.05, 0.7, mat.wood, -15.8, 0.95, 7.0);
-for (let i = 0; i < 3; i++) { cyl(0.18, 0.18, 0.05, mat.black, -16.8 + i, 0.72, 7.6); cyl(0.03, 0.03, 0.72, mat.steel, -16.8 + i, 0, 7.6, null, 8); }
-sofa(-12, 10.6, 0, 2.6, mat.fabric); sofa(-14.5, 9.2, Math.PI / 2, 2.0, mat.fabric);
-cyl(0.55, 0.55, 0.38, mat.wood, -12, 0, 9.1);
-plant(-9, 11.2, 1.3, true); plant(-17.6, 11.2, 1.0);
-person(scene, -16.6, 8.0, Math.PI, 0x7a5c99, false);
-
-// Meeting room x[-6,3] z[-12,-5.5]
-glassWall(-6, -5.5, 3, -5.5, [[1.0, 2.2]]);
-glassWall(-6, -12, -6, -5.5);
-glassWall(3, -12, 3, -5.5);
-rug(-5.6, 2.6, -11.6, -5.9, mat.carpetTeal);
-(function meeting() {
-  const t = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.05, 48), mat.wood); t.scale.set(2.3, 1, 1.05); t.position.set(-1.5, 0.74, -8.7); t.castShadow = true; t.receiveShadow = true; scene.add(t);
-  cyl(0.18, 0.3, 0.72, mat.black, -1.5, 0, -8.7);
-  const seats = [[-3.6, -8.7, -Math.PI / 2], [0.6, -8.7, Math.PI / 2]];
-  for (let i = 0; i < 3; i++) { seats.push([-2.8 + i * 1.3, -10.0, Math.PI]); seats.push([-2.8 + i * 1.3, -7.4, 0]); }
-  seats.forEach(([x, z, r]) => chair(scene, x, z, r, mat.fabricWarm));
-  // a team meeting in progress: STR, ARC, MEP
-  [[-2.8, -7.35, 0, 0xe0803a, "STR"], [-1.5, -7.35, 0, 0x4f9d69, "ARC"], [-0.2, -10.05, Math.PI, 0x4a7fc0, "MEP"]].forEach(([x, z, r, c, code]) => {
-    const p = person(scene, x, z, r, c, true); label("ประชุม", 0, 1.6, 0, "", code, p);
-  });
-  screen("list", "MTG-001 คาน B2 ชนท่อ", "#8f7cff", 2.4, 1.35, -5.85, 1.6, -8.7, Math.PI / 2);
-})();
-
-// Head of team (open plan centre)
-desk(-1.5, -2.6, 0, { w: 2.0, d: 0.9, monitors: 2, kind: "list", kind2: "bars", title: "ตรวจงาน wave A", accent: "#3fd6c6", who: "หัวหน้าทีม", code: "HEAD", color: 0x1f4e5f, top: mat.woodDark });
-plant(1.2, -3.6, 1.0, true);
-
-// Secretary
-desk(7, -3.3, 0, { w: 1.8, d: 0.8, monitors: 2, kind: "list", kind2: "post", title: "สถานะงาน · เลขา", accent: "#d9a95b", who: "เลขา", code: "SEC", color: 0x8a4f7d, top: mat.white });
-box(0.9, 0.75, 0.5, mat.white, 8.6, 0, -3.65);
-
-// CEO room x[11,20] z[-12,-3]
-glassWall(11, -12, 11, -3, [[-5.2, -3.8]]);
-glassWall(11, -3, 20, -3);
-rug(11.4, 19.6, -11.6, -3.4, mat.carpetWarm);
-(function ceo() {
-  const g = new THREE.Group(); g.position.set(16.8, 0, -8.6); g.rotation.y = Math.PI / 2; scene.add(g);
-  box(2.4, 0.06, 1.0, mat.woodDark, 0, 0.72, 0, g);
-  box(2.3, 0.7, 0.06, mat.black, 0, 0.02, -0.4, g);
-  box(0.06, 0.7, 0.9, mat.black, -1.14, 0.02, 0, g); box(0.06, 0.7, 0.9, mat.black, 1.14, 0.02, 0, g);
-  screen("bars", "สรุปโครงการ · CEO", "#d9a95b", 0.7, 0.42, 0, 1.1, -0.3, 0, g, [256, 150]);
-  chair(g, 0, 0.72, 0, mat.black);
-  const p = person(g, 0, 0.74, 0, 0x14202a, true);
-  label("พี่โสภณ", 0, 1.8, 0.74, "", "CEO", g);
-  chair(g, -0.5, -0.95, Math.PI, mat.fabricWarm); chair(g, 0.5, -0.95, Math.PI, mat.fabricWarm);
-})();
-sofa(13.6, -4.3, Math.PI, 2.4, mat.fabricWarm);
-cyl(0.5, 0.5, 0.36, mat.wood, 13.6, 0, -5.6);
-screen("line", "S-Curve โครงการ", "#d9a95b", 2.2, 1.24, 15.5, 1.6, -3.15, Math.PI);
-plant(19.2, -11.2, 1.4, true); plant(11.7, -11.2, 1.1, true);
-box(2.4, 0.02, 0.02, mat.ledWarm, 15.5, 2.5, -3.1);
-
-// Content studio x[11,20] z[-1.5,4.5]
-glassWall(11, -1.5, 11, 4.5, [[1.0, 2.2]]);
-glassWall(11, -1.5, 20, -1.5);
-glassWall(11, 4.5, 20, 4.5);
-rug(11.4, 19.6, -1.1, 4.1, mat.carpetTeal);
-box(0.1, 2.6, 4.6, new THREE.MeshStandardMaterial({ color: 0x173b3f, roughness: 0.9 }), 19.6, 0, 1.5);
-box(0.04, 0.04, 4.4, mat.led, 19.5, 2.55, 1.5);
-const ringLight = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.03, 10, 48), mat.ledWarm);
-ringLight.position.set(16.6, 1.5, 1.5); ringLight.rotation.y = Math.PI / 2; scene.add(ringLight);
-cyl(0.02, 0.02, 1.2, mat.steel, 16.6, 0, 1.5, null, 8);
-box(0.14, 0.1, 0.2, mat.black, 16.5, 1.25, 1.5);
-cyl(0.3, 0.3, 0.45, mat.fabricWarm, 18.6, 0, 1.5);
-desk(13.4, 0.4, Math.PI / 2, { w: 1.6, d: 0.8, monitors: 2, kind: "post", kind2: "bars", title: "Content AI ก่อสร้าง", accent: "#3fd6c6", who: "ทีม Content", code: "CNT", color: 0xc0564b });
-plant(19.0, 3.8, 0.9);
-
-// Dev lab x[11,20] z[6,12]
-glassWall(11, 6, 11, 12, [[6.4, 7.6]]);
-glassWall(11, 6, 20, 6);
-rug(11.4, 19.6, 6.4, 11.6, mat.carpet);
-desk(14.0, 9.6, Math.PI, { w: 2.0, d: 0.8, monitors: 3, kind: "code", kind2: "line", title: "Web App · BOQ", accent: "#8f7cff", who: "นักพัฒนาเว็บ", code: "WEB", color: 0x3b3b8f, top: mat.black });
-desk(17.4, 9.6, Math.PI, { w: 2.0, d: 0.8, monitors: 3, kind: "model", kind2: "code", title: "SketchUp Extension", accent: "#3fd6c6", who: "นักพัฒนา SketchUp", code: "SKP", color: 0x2f6f6a, top: mat.black });
-screen("model", "PHISO Wall Takeoff · .rbz", "#3fd6c6", 2.4, 1.35, 15.7, 1.65, 6.1, 0);
-
-// QS team pods x[-6,9] z[2,11]
-rug(-6, 9.6, 2.0, 11.2, mat.carpet);
-const qs = [
-  ["STR", "วิศวกรโครงสร้าง", 0xe0803a, "bars", "STR คอนกรีต 64.2 ลบ.ม."],
-  ["ARC", "วิศวกรสถาปัตย์", 0x4f9d69, "bars", "ARC ผนัง 410 ตร.ม."],
-  ["MEP", "วิศวกรงานระบบ", 0x4a7fc0, "line", "MEP ไฟฟ้า ประปา แอร์"],
-  ["PUR", "ฝ่ายจัดซื้อ", 0xc9a227, "table", "PUR ราคาวัสดุ"],
-  ["PLN", "ทีมวางแผน", 0x9b5fb5, "gantt", "PLN Gantt 180 วัน"],
-  ["BOQ", "ทีม BOQ / Presentation", 0xc0564b, "line", "BOQ S-Curve"],
+const TEAM = [
+  ["CEO", "พี่โสภณ", "ผู้บริหาร"], ["SEC", "เลขา", "ประสานงานทุกฝ่าย"], ["HEAD", "หัวหน้าทีม", "แจกงาน · ตรวจงาน"],
+  ["STR", "วิศวกรโครงสร้าง", "ถอดแบบ"], ["ARC", "วิศวกรสถาปัตย์", "ถอดแบบ"], ["MEP", "วิศวกรงานระบบ", "ไฟฟ้า ประปา แอร์"],
+  ["PUR", "ฝ่ายจัดซื้อ", "เช็คราคา"], ["PLN", "ทีมวางแผน", "Gantt · S-Curve"], ["BOQ", "ทีม BOQ / Presentation", "BOQ · สไลด์"],
+  ["CNT", "ทีม Content AI", "โพสต์ Facebook"], ["TRN", "ทีมเนื้อหาอบรม", "หลักสูตร"], ["WEB", "นักพัฒนาเว็บ", "Web App"], ["SKP", "นักพัฒนา SketchUp", "Extension"],
 ];
-const pos = [[-3.5, 4.0], [1.5, 4.0], [6.5, 4.0], [-3.5, 8.6], [1.5, 8.6], [6.5, 8.6]];
-// facing: row1 people face north (toward head) means desk rot = PI (person at local +z -> world -z)? Person sits at local +z; with rot 0 they sit south of desk facing north.
-qs.forEach(([code, who, col, kind, title], i) => {
-  const [x, z] = pos[i];
-  const divider = M(col, { roughness: 0.95 });
-  desk(x, z, 0, { w: 1.8, d: 0.8, monitors: 2, kind, kind2: i % 2 ? "gantt" : "list", title, accent: "#" + col.toString(16).padStart(6, "0"), who, code, color: col, divider });
-});
-plant(-5.4, 6.3, 1.1, true); plant(9.2, 6.3, 1.1, true); plant(4.0, 11.4, 1.0);
-const ledFloor = []; // wayfinding strips
-[[-6, 1.6, 15.6]].forEach(([x, z, len]) => ledFloor.push(box(len, 0.01, 0.06, mat.led, x + len / 2, 0.02, z)));
+const NAME = Object.fromEntries(TEAM.map(t => [t[0], t[1]]));
+const ALIAS = { DEV: "WEB", SOPHON: "CEO" };
+const norm = c => ALIAS[c] || c;
+const STATUS_TH = { idle: "ว่าง", assigned: "ได้รับงาน", working: "กำลังทำ", delivered: "ส่งงานแล้ว", pass: "ผ่านแล้ว", revise: "กำลังแก้ไข", issue: "พบปัญหา", meeting: "ประชุมอยู่" };
+const TYPE = {
+  order: ["คำสั่งงาน", "brass"], plan: ["วางแผน", "teal"], assign: ["แจกงาน", "teal"], working: ["กำลังทำ", "teal"], deliver: ["ส่งงาน", "ok"],
+  review_pass: ["ตรวจผ่าน", "ok"], review_fail: ["ส่งกลับแก้", "warn"], issue: ["พบปัญหา", "bad"], meeting_start: ["เปิดประชุม", "meet"],
+  meeting_say: ["ในที่ประชุม", "meet"], meeting_end: ["มติที่ประชุม", "meet"], handover: ["สรุปส่งมอบ", "brass"], report: ["รายงานพี่โสภณ", "brass"],
+  approval_request: ["ขออนุมัติ", "brass"], approved: ["อนุมัติ", "ok"], rejected: ["ให้แก้ไข", "warn"], published: ["เผยแพร่แล้ว", "ok"], done: ["ปิดงาน", "ok"], note: ["บันทึก", "teal"],
+};
 
-/* ---------- zone labels & data ---------- */
-const ZONES = [
-  { id: "ceo", name: "ห้องพี่โสภณ (CEO)", c: [15.5, -7.5], r: [11, 20, -12, -3], who: "พี่โสภณ", desc: "ห้องผู้บริหารมุมตึก กระจกสองด้านมองเห็นสุขุมวิท โต๊ะไม้สีเข้ม จอ S-Curve โครงการ และมุมรับแขก", items: ["รับรายงานจากเลขาเท่านั้น", "อนุมัติโพสต์ / merge / เนื้อหาอบรม", "ตัดสินเรื่องที่ทีมตกลงกันไม่ได้"] },
-  { id: "sec", name: "โต๊ะเลขา", c: [7, -3.0], r: [5, 10, -5, -1], who: "เลขา", desc: "ตั้งอยู่หน้าห้อง CEO เป็นด่านแรกของทุกคำสั่งและทุกรายงาน จอแสดงสถานะงานของทุกทีมและโพสต์ที่รออนุมัติ", items: ["รับคำสั่งพี่โสภณ ส่งให้หัวหน้า/ทีม", "นัดประชุมแก้ปัญหา จดรายงาน", "ตรวจ Content ก่อนเสนออนุมัติ"] },
-  { id: "head", name: "โต๊ะหัวหน้าทีม", c: [-1.5, -2.4], r: [-4, 1, -4, -1], who: "หัวหน้าทีม", desc: "กลางออฟฟิศ หันหน้าเข้าหาโซน QS เพื่อเห็นทุกโต๊ะ จอคู่สำหรับตรวจงานรายฝ่าย", items: ["แจกงานเป็นใบสั่งงาน", "ตรวจงานทุก wave", "สรุปส่งมอบผ่านเลขา"] },
-  { id: "qs", name: "โซนทีม QS 6 ฝ่าย", c: [1.5, 6.4], r: [-6, 9.6, 2, 11.2], who: "STR · ARC · MEP · PUR · PLN · BOQ", desc: "โต๊ะทำงานแบบเปิด 6 โต๊ะ ฉากกั้นสีประจำฝ่าย จอคู่ทุกโต๊ะ ทางเดินไฟ LED นำทางไปโต๊ะหัวหน้า", items: ["ถอดแบบโครงสร้าง สถาปัตย์ งานระบบ", "เช็คราคา วางแผน Gantt S-Curve", "ประกอบ BOQ และ Presentation"] },
-  { id: "meet", name: "ห้องประชุมแก้ปัญหา", c: [-1.5, -8.7], r: [-6, 3, -12, -5.5], who: "ทีมที่เกี่ยวข้อง", desc: "ห้องกระจก โต๊ะวงรี 8 ที่นั่ง จอแสดงวาระ ตอนนี้ STR ARC MEP กำลังประชุมเรื่องคาน B2 ชนท่อ", items: ["ประชุมได้ไม่เกิน 3 รอบ", "ได้มติแล้วทีมแก้งานของตัวเอง", "เลขานำมติรายงานพี่โสภณ"] },
-  { id: "content", name: "สตูดิโอ Content", c: [15.5, 1.5], r: [11, 20, -1.5, 4.5], who: "ทีม Content AI", desc: "ฉากหลังสีเขียวเทาพร้อมไฟ LED, ไฟวงแหวน และกล้อง สำหรับถ่ายคลิปและทำกราฟฟิกโพสต์ Facebook", items: ["คิด Content AI สำหรับงานก่อสร้าง", "ทำกราฟฟิก 1080×1350", "ส่งเลขาตรวจ → พี่โสภณอนุมัติ"] },
-  { id: "dev", name: "แล็บทีมเขียนโปรแกรม", c: [15.5, 9.0], r: [11, 20, 6, 12], who: "นักพัฒนาเว็บ · นักพัฒนา SketchUp", desc: "โต๊ะจอสามจอสองชุด และจอใหญ่แสดงโมเดล SketchUp จาก Extension ที่กำลังพัฒนา", items: ["เว็บ Application งานก่อสร้าง", "SketchUp Extension (.rbz)", "merge / deploy เมื่อพี่โสภณสั่ง"] },
-  { id: "train", name: "ห้องอบรม", c: [-14, -8.7], r: [-20, -8, -12, -5.5], who: "ทีมเนื้อหาการอบรม", desc: "ห้องเรียน 12 ที่นั่ง จอสไลด์ด้านหน้า ใช้ทั้งซ้อมสอนและจัดอบรมจริง", items: ["ออกแบบหลักสูตรและสไลด์", "แบบฝึกหัด แบบทดสอบ", "พี่โสภณตรวจทุกครั้ง"] },
-  { id: "lobby", name: "ล็อบบี้ & ประติมากรรม AI", c: [-10.5, 0], r: [-14, -7.5, -4.5, 4.5], who: "ต้อนรับ", desc: "ผนังระแนงไม้โลโก้ COST NINE หน้าลิฟต์ และประติมากรรมวงแหวนแสงที่สื่อถึงทีม AI", items: ["ทางเข้าจากลิฟต์", "รับแขกและลูกค้า"] },
-  { id: "lounge", name: "แพนทรี & Lounge", c: [-14, 8.7], r: [-20, -8, 5.5, 12], who: "ทุกทีม", desc: "เคาน์เตอร์กาแฟ บาร์สตูล โซฟา และผนังต้นไม้ สำหรับพักและคุยงานแบบไม่เป็นทางการ", items: ["มุมพักผ่อน", "ผนังต้นไม้ (Green wall)"] },
+/* ---------- board ---------- */
+const boardEl = document.getElementById("board");
+const ROW = {};
+TEAM.forEach(([c, n, role]) => {
+  const li = document.createElement("li"); li.dataset.st = "idle";
+  li.innerHTML = `<span class="dot"></span><span class="nm">${n}<small>${c}</small></span><span class="st">ว่าง</span><span class="task">${role}</span><span class="bar"><span></span></span>`;
+  boardEl.appendChild(li); ROW[c] = { li, role };
+});
+function setStatus(c, st, pct, task) {
+  const r = ROW[c]; if (!r) return;
+  r.li.dataset.st = st;
+  r.li.querySelector(".st").textContent = (STATUS_TH[st] || st) + (st === "working" && pct != null ? " " + Math.round(pct) + "%" : "");
+  r.li.querySelector(".task").textContent = task || r.role;
+  const bar = r.li.querySelector(".bar span");
+  const w = st === "pass" || st === "delivered" ? 100 : st === "idle" ? 0 : st === "assigned" ? 5 : pct != null ? pct : parseFloat(bar.style.width) || 0;
+  bar.style.width = Math.max(0, Math.min(100, w)) + "%";
+}
+function highlight(codes) { Object.entries(ROW).forEach(([c, r]) => r.li.classList.toggle("act", codes.includes(c))); }
+function resetBoard() { TEAM.forEach(([c]) => setStatus(c, "idle")); highlight([]); meeting.clear(); }
+
+/* ---------- events ---------- */
+const meeting = new Set();
+const teamsOf = ev => (ev.teams && ev.teams.length ? ev.teams : ev.team ? [ev.team] : []).map(norm).filter(c => ROW[c]);
+const names = cs => cs.map(c => NAME[c] || c).join(", ");
+function sceneOf(ev) {
+  const ts = teamsOf(ev), c = ts[0] || "";
+  const area = c === "CNT" ? "content" : c === "WEB" || c === "SKP" ? "dev" : c === "TRN" ? "train" : "";
+  switch (ev.type) {
+    case "order": return "order";
+    case "plan": return "assign";
+    case "assign": return area === "content" ? "studio" : area === "dev" ? "dev" : area === "train" ? "train" : "assign";
+    case "working": return area === "content" ? "content" : area || (["PUR", "PLN", "BOQ"].includes(c) ? "qs" : "working");
+    case "deliver": return area && norm(ev.to) === "SEC" ? "handover" : "deliver";
+    case "review_pass": return "qs";
+    case "review_fail": return "revise";
+    case "issue": return "issue";
+    case "meeting_start": case "meeting_say": return "meet";
+    case "meeting_end": return "agree";
+    case "handover": return "handover";
+    case "report": return "report";
+    case "approval_request": case "approved": case "rejected": return "approve";
+    case "published": return "content";
+    case "done": return "ceo";
+    default: return area || "qs";
+  }
+}
+function whoLine(ev) {
+  const ts = teamsOf(ev);
+  switch (ev.type) {
+    case "order": return "พี่โสภณ → เลขา";
+    case "plan": return "หัวหน้าทีม";
+    case "assign": return (ts.some(c => ["STR", "ARC", "MEP", "PUR", "PLN", "BOQ"].includes(c)) ? "หัวหน้าทีม → เลขา → " : "เลขา → ") + names(ts);
+    case "deliver": return names(ts) + " → " + (NAME[norm(ev.to || "HEAD")] || ev.to);
+    case "review_pass": case "review_fail": return "หัวหน้าทีม → " + names(ts);
+    case "issue": return names(ts) + " → เลขา" + (ev.with && ev.with.length ? " (เกี่ยวกับ " + names(ev.with.map(norm)) + ")" : "");
+    case "meeting_start": case "meeting_end": return "เลขา + " + names(ts.length ? ts : [...meeting]);
+    case "meeting_say": return names(ts) + " ในที่ประชุม";
+    case "handover": return "หัวหน้าทีม → เลขา";
+    case "report": case "approval_request": return "เลขา → พี่โสภณ";
+    case "approved": case "rejected": return "พี่โสภณ";
+    case "done": return "เลขา";
+    default: return names(ts) || NAME[norm(ev.from || "SEC")] || "";
+  }
+}
+function quoteOf(ev) {
+  const t = ev.type;
+  if (t === "order") return "เลขา: “รับคำสั่งค่ะ จะส่งหัวหน้าวางแผนทันที”";
+  if (t === "assign") return "“รับงานครับ”";
+  if (t === "deliver") return "หัวหน้า: “รับไว้ตรวจครับ”";
+  if (t === "review_fail") return "“รับทราบ จะแก้ให้ครับ”";
+  if (t === "issue") return "เลขา: “จะนัดประชุมทีมที่เกี่ยวข้องให้ค่ะ”";
+  if (t === "meeting_end") return "ทีมกลับไปแก้งานตามมติ";
+  if (t === "handover") return "เลขา: “รับค่ะ จะรายงานพี่โสภณ”";
+  if (t === "report") return "พี่โสภณ: “ขอบคุณครับ”";
+  if (t === "approval_request") return "พี่โสภณกำลังพิจารณา";
+  return "";
+}
+function involved(ev) {
+  const s = new Set(teamsOf(ev));
+  ({ order: ["CEO", "SEC"], plan: ["HEAD"], assign: ["SEC"], deliver: [norm(ev.to || "HEAD")], review_pass: ["HEAD"], review_fail: ["HEAD"], issue: ["SEC"], meeting_start: ["SEC"], meeting_end: ["SEC"], handover: ["HEAD", "SEC"], report: ["SEC", "CEO"], approval_request: ["SEC", "CEO"], approved: ["CEO"], rejected: ["CEO", "SEC"], done: ["SEC"] }[ev.type] || []).forEach(c => s.add(c));
+  if (ev.type === "meeting_end") meeting.forEach(c => s.add(c));
+  return [...s];
+}
+function applyState(ev) {
+  const ts = teamsOf(ev);
+  const m = { assign: ["assigned", 0], working: ["working", ev.pct], deliver: ["delivered", 100], review_pass: ["pass", 100], review_fail: ["revise", 60], issue: ["issue", null], meeting_start: ["meeting", null], approval_request: ["delivered", 100], approved: ["pass", 100], rejected: ["revise", 60], published: ["pass", 100] }[ev.type];
+  if (ev.type === "meeting_end") meeting.forEach(c => setStatus(c, "working", null, "แก้งานตามมติ: " + ev.msg));
+  if (m) ts.forEach(c => setStatus(c, m[0], m[1], ev.msg));
+  if (ev.type === "meeting_start") ts.forEach(c => meeting.add(c));
+  if (ev.type === "meeting_end") meeting.clear();
+  if (ev.type === "done") TEAM.forEach(([c]) => { if (ROW[c].li.dataset.st !== "idle") setStatus(c, "pass", 100, "งานปิดแล้ว"); });
+}
+
+/* ---------- stage ---------- */
+const phA = document.getElementById("phA"), phB = document.getElementById("phB");
+let front = phA, curScene = "tower";
+const $ = id => document.getElementById(id);
+function showScene(key) {
+  const [src, room] = IMG[key] || IMG.qs;
+  $("roomName").textContent = room;
+  if (key === curScene) return;
+  curScene = key;
+  const back = front === phA ? phB : phA;
+  back.classList.remove("on"); back.src = src; back.alt = room;
+  void back.offsetWidth; back.classList.add("on"); front.classList.remove("on"); front = back;
+}
+function present(ev) {
+  const [label, tone] = TYPE[ev.type] || TYPE.note;
+  showScene(sceneOf(ev));
+  const chip = $("chip"); chip.textContent = label; chip.className = "chip " + tone;
+  $("who").textContent = whoLine(ev);
+  $("msg").textContent = ev.msg || label;
+  $("quote").textContent = quoteOf(ev);
+  applyState(ev);
+  highlight(involved(ev));
+  addFeed(ev);
+}
+
+/* ---------- feed ---------- */
+const feedEl = $("feed");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function bkk(t) { const d = t ? new Date(t) : new Date(); if (isNaN(d)) return ""; const b = new Date(d.getTime() + 7 * 3600e3); return String(b.getUTCHours()).padStart(2, "0") + ":" + String(b.getUTCMinutes()).padStart(2, "0"); }
+function addFeed(ev) {
+  $("feedEmpty").hidden = true;
+  const [label, tone] = TYPE[ev.type] || TYPE.note;
+  const li = document.createElement("li"); li.className = "c-" + tone;
+  li.innerHTML = `<time>${bkk(ev.t)}</time><span class="k">${esc(label)} · ${esc(whoLine(ev))}</span><span class="m">${esc(ev.msg)}</span>`;
+  feedEl.insertBefore(li, feedEl.firstChild);
+  while (feedEl.children.length > 120) feedEl.removeChild(feedEl.lastChild);
+}
+function clearFeed() { feedEl.innerHTML = ""; $("feedEmpty").hidden = false; }
+
+/* ---------- playback queue ---------- */
+let speed = 1, paused = false, queue = [], timer = 0, playing = false;
+function dwell() { const base = queue.length > 6 ? 2200 : queue.length > 2 ? 3400 : 5200; return base / speed; }
+function pump() {
+  if (paused || playing) return;
+  const ev = queue.shift();
+  if (!ev) return;
+  playing = true; present(ev);
+  timer = setTimeout(() => { playing = false; pump(); }, dwell());
+}
+function enqueue(ev) { queue.push(ev); pump(); }
+function flush() { clearTimeout(timer); queue = []; playing = false; }
+$("b-pause").addEventListener("click", e => { paused = !paused; e.currentTarget.setAttribute("aria-pressed", String(paused)); e.currentTarget.textContent = paused ? "เล่นต่อ" : "หยุดภาพ"; if (!paused) { playing = false; pump(); } });
+$("b-speed").addEventListener("click", e => { speed = speed === 1 ? 2 : 1; e.currentTarget.setAttribute("aria-pressed", String(speed === 2)); });
+
+/* ---------- tabs & rooms ---------- */
+const tabs = [["t-board", "p-board"], ["t-feed", "p-feed"], ["t-rooms", "p-rooms"]];
+tabs.forEach(([t]) => $(t).addEventListener("click", () => tabs.forEach(([u, p]) => { $(u).setAttribute("aria-selected", String(u === t)); $(p).hidden = u !== t; })));
+["lobby", "ceo", "qs", "meet", "studio", "dev", "train", "lounge", "tower"].forEach(k => {
+  const b = document.createElement("button"); b.type = "button";
+  b.innerHTML = `<img src="${IMG[k][0]}" alt="" loading="lazy"><span>${IMG[k][1]}</span>`;
+  b.addEventListener("click", () => showScene(k));
+  $("rooms").appendChild(b);
+});
+
+/* ---------- sample run ---------- */
+const DEMO = [
+  ["order", { msg: "ถอดแบบบ้าน 2 ชั้น ทำ BOQ แผนงาน 6 งวด และสไลด์ ส่งศุกร์นี้" }],
+  ["plan", { msg: "แบ่ง 3 wave: ถอดแบบ → ราคาและแผนงาน → BOQ" }],
+  ["assign", { teams: ["STR", "ARC", "MEP", "PLN"], msg: "Wave A ถอดแบบ + ร่าง WBS" }],
+  ["assign", { teams: ["CNT"], msg: "ทำโพสต์ AI ช่วยถอดแบบ 1 โพสต์" }],
+  ["working", { team: "STR", pct: 35, msg: "อ่านตารางฐานราก เสา คาน" }],
+  ["working", { team: "CNT", pct: 50, msg: "เขียนแคปชันและทำกราฟฟิก" }],
+  ["issue", { team: "MEP", msg: "ท่อน้ำทิ้งชนคาน B2 ชั้น 2", with: ["STR", "ARC"] }],
+  ["meeting_start", { teams: ["STR", "ARC", "MEP"], msg: "MTG-001 ท่อน้ำทิ้งชนคาน B2" }],
+  ["meeting_say", { team: "STR", msg: "เจาะคานตรงนั้นไม่ได้ เสนอย้ายแนวท่อ" }],
+  ["meeting_say", { team: "MEP", msg: "ย้ายท่อไปช่องชาร์ปข้างบันไดได้" }],
+  ["meeting_end", { msg: "ย้ายแนวท่อ + ลดฝ้าห้องน้ำเหลือ 2.40 ม. (+3,200 บาท)" }],
+  ["deliver", { team: "CNT", to: "SEC", msg: "โพสต์ P01 พร้อมภาพ 1080×1350" }],
+  ["approval_request", { team: "CNT", msg: "โพสต์ P01 ตั้งเวลา 19:00" }],
+  ["approved", { team: "CNT", msg: "อนุมัติโพสต์ P01" }],
+  ["published", { team: "CNT", msg: "ตั้งเวลาโพสต์ 19:00 แล้ว" }],
+  ["deliver", { team: "STR", msg: "คอนกรีต 64.2 ลบ.ม. เหล็ก 7.1 ตัน" }],
+  ["deliver", { team: "ARC", msg: "ผนัง 410 ตร.ม. ฉาบ 640 ตร.ม." }],
+  ["review_pass", { team: "STR", msg: "อัตราเหล็ก 110 กก./ลบ.ม. ผ่าน" }],
+  ["review_fail", { team: "ARC", msg: "ฉาบน้อยกว่า 2 เท่าของผนัง ตรวจใหม่" }],
+  ["deliver", { team: "ARC", msg: "แก้แล้ว ฉาบ 820 ตร.ม." }],
+  ["review_pass", { teams: ["ARC", "MEP"], msg: "สถาปัตย์และงานระบบผ่าน" }],
+  ["assign", { teams: ["PUR", "PLN"], msg: "Wave B เช็คราคา + คำนวณระยะเวลา" }],
+  ["working", { team: "PUR", pct: 60, msg: "เทียบราคา 3 ร้าน 86 รายการ" }],
+  ["deliver", { team: "PLN", msg: "180 วัน 6 งวด" }],
+  ["review_pass", { teams: ["PUR", "PLN"], msg: "ราคาและแผนงานผ่าน" }],
+  ["assign", { teams: ["BOQ"], msg: "Wave C ทำ BOQ Excel + สไลด์" }],
+  ["deliver", { team: "BOQ", msg: "BOQ 3.48 ล้านบาท + สไลด์ 12 หน้า" }],
+  ["review_pass", { team: "BOQ", msg: "ยอดตรงทุกชีต" }],
+  ["handover", { msg: "3.48 ล้านบาท · 180 วัน · 6 งวด" }],
+  ["report", { msg: "BOQ 3.48 ล้านบาท พร้อมส่ง ปัญหาท่อชนคานแก้แล้ว (+3,200 บาท)" }],
+  ["done", { msg: "ปิดงานบ้าน 2 ชั้นแล้ว" }],
 ];
-ZONES.forEach(z => {
-  z.area = (z.r[1] - z.r[0]) * (z.r[3] - z.r[2]);
-  const l = label(z.name, z.c[0], 3.3, z.c[1], "zone");
-  l.el.addEventListener("click", () => focusZone(z.id));
-  z.label = l;
-});
-label("ถนนสุขุมวิท · BTS", 0, -128, 95, "city");
+let demoOn = false, demoTimer = 0, demoIdx = 0;
+function demoTick() {
+  if (!demoOn) return;
+  if (queue.length > 1) { demoTimer = setTimeout(demoTick, 600); return; }
+  if (demoIdx >= DEMO.length) { demoTimer = setTimeout(() => { if (!demoOn) return; resetBoard(); clearFeed(); demoIdx = 0; demoTick(); }, 8000 / speed); return; }
+  const [type, body] = DEMO[demoIdx++];
+  enqueue(Object.assign({ type, t: new Date().toISOString() }, body));
+  demoTimer = setTimeout(demoTick, 900);
+}
+function startDemo() {
+  demoOn = true; $("b-demo").setAttribute("aria-pressed", "true");
+  $("badge").className = "badge demo"; $("badge").textContent = "ตัวอย่างจำลอง";
+  $("jobTitle").textContent = "ตัวอย่าง: บ้าน 2 ชั้น (ข้อมูลสมมติ)";
+  flush(); resetBoard(); clearFeed(); demoIdx = 0; clearTimeout(demoTimer); demoTick();
+}
+function stopDemo() { demoOn = false; clearTimeout(demoTimer); $("b-demo").setAttribute("aria-pressed", "false"); flush(); }
+$("b-demo").addEventListener("click", () => { if (demoOn) { stopDemo(); restoreLive(); } else startDemo(); });
 
-/* ---------- city outside ---------- */
-const GROUND = -150;
-const cityGroup = new THREE.Group(); scene.add(cityGroup);
-function windowTextures() {
-  const mk = (night) => {
-    const c = document.createElement("canvas"); c.width = 128; c.height = 128; const g = c.getContext("2d");
-    g.fillStyle = night ? "#000" : "#5b7383"; g.fillRect(0, 0, 128, 128);
-    const r = mulberry(night ? 7 : 3);
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 8; j++) {
-      if (night) { const v = r(); g.fillStyle = v > 0.55 ? (v > 0.85 ? "#ffe2a8" : "#f4c77a") : (v > 0.4 ? "#3a4c66" : "#000"); }
-      else { const v = 120 + r() * 70; g.fillStyle = `rgb(${v * 0.62 | 0},${v * 0.78 | 0},${v * 0.9 | 0})`; }
-      g.fillRect(i * 32 + 3, j * 16 + 3, 26, 10);
+/* ---------- live data ---------- */
+let live = false, liveEvents = [], lastSeq = -1, liveJob = "";
+function header() {
+  if (!live) { $("badge").className = "badge off"; $("badge").textContent = "ออฟไลน์"; $("jobTitle").textContent = "ไม่ได้เชื่อมต่อข้อมูลสด"; return; }
+  $("badge").className = "badge live"; $("badge").textContent = "LIVE";
+  const o = liveEvents.filter(e => e.job === liveJob).find(e => e.type === "order");
+  $("jobTitle").textContent = liveJob ? (o ? o.title || o.msg : liveJob) : "ยังไม่มีงาน";
+}
+function restoreLive() {
+  resetBoard(); clearFeed(); header();
+  const evs = liveEvents.filter(e => e.job === liveJob);
+  evs.forEach(e => { applyState(e); addFeed(e); });
+  const last = evs[evs.length - 1];
+  if (last) { const [label, tone] = TYPE[last.type] || TYPE.note; showScene(sceneOf(last)); $("chip").textContent = label; $("chip").className = "chip " + tone; $("who").textContent = whoLine(last); $("msg").textContent = last.msg || label; $("quote").textContent = ""; }
+}
+function toEv(doc) {
+  const d = doc.data() || {};
+  const ev = { seq: Number(d.seq) || 0, t: d.t, job: String(d.job || ""), type: String(d.type || "note"), team: d.team ? String(d.team) : "", teams: Array.isArray(d.teams) ? d.teams.map(String) : [], to: d.to ? String(d.to) : "", from: d.from ? String(d.from) : "", msg: d.msg ? String(d.msg) : "", pct: d.pct != null ? Number(d.pct) : null, title: d.title ? String(d.title) : "", with: Array.isArray(d.with) ? d.with.map(String) : [] };
+  if (!TYPE[ev.type]) ev.type = "note";
+  return ev;
+}
+(async function connect() {
+  let db = null;
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { header(); startDemo(); return; }
+  let first = true;
+  const t10 = setTimeout(() => { if (first) { $("badge").className = "badge off"; $("badge").textContent = "ยังเชื่อมต่อไม่ได้"; if (!demoOn) startDemo(); } }, 10000);
+  db.collection("events").orderBy("seq", "desc").limit(300).onSnapshot(snap => {
+    const evs = snap.docs.filter(d => d.exists).map(toEv).sort((a, b) => a.seq - b.seq);
+    if (first) {
+      if (snap.metadata && snap.metadata.fromCache && !evs.length) return;
+      first = false; clearTimeout(t10); live = true;
+      liveEvents = evs; lastSeq = evs.length ? evs[evs.length - 1].seq : -1; liveJob = evs.length ? evs[evs.length - 1].job : "";
+      if (!evs.length) { startDemo(); $("jobTitle").textContent = "ยังไม่มีงานจริง · กำลังเล่นตัวอย่าง"; return; }
+      restoreLive(); return;
     }
-    const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.encoding = THREE.sRGBEncoding; return t;
-  };
-  return { day: mk(false), night: mk(true) };
-}
-const WT = windowTextures();
-const towerMat = new THREE.MeshStandardMaterial({ map: WT.day, emissiveMap: WT.night, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.35, metalness: 0.4 });
-const towerMat2 = towerMat.clone(); towerMat2.color = new THREE.Color(0xc9b9a6);
-function tower(x, z, w, d, h, m) {
-  const geo = new THREE.BoxGeometry(w, h, d);
-  const uv = geo.attributes.uv;
-  for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * Math.max(1, w / 6), uv.getY(i) * Math.max(1, h / 12));
-  const mesh = new THREE.Mesh(geo, m); mesh.position.set(x, GROUND + h / 2, z); cityGroup.add(mesh);
-  return mesh;
-}
-(function city() {
-  const r = mulberry(2026);
-  let n = 0;
-  while (n < 170) {
-    const ang = r() * Math.PI * 2, dist = 55 + Math.pow(r(), 0.7) * 380;
-    const x = Math.cos(ang) * dist, z = Math.sin(ang) * dist;
-    if (Math.abs(z - 95) < 16) continue;            // keep Sukhumvit road clear
-    const w = 14 + r() * 22, d = 14 + r() * 22;
-    const h = 40 + Math.pow(r(), 1.6) * 230 * (dist < 160 ? 1.1 : 0.8);
-    const t = tower(x, z, w, d, h, r() > 0.7 ? towerMat2 : towerMat);
-    if (h > 180 && r() > 0.5) { const sp = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.8, 18, 6), mat.steel); sp.position.set(x, GROUND + h + 9, z); cityGroup.add(sp); }
-    n++;
-  }
-  // our own tower below floor 38 and a crown above
-  tower(0, 0, FW + 0.6, FD + 0.6, 150 - 0.3, towerMat).position.y = GROUND + (150 - 0.3) / 2 - 0.3;
-  // ground, road, BTS viaduct and train
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), M(0x48504a, { roughness: 1 }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = GROUND; cityGroup.add(ground);
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(2400, 26), M(0x2a2d30, { roughness: 0.9 }));
-  road.rotation.x = -Math.PI / 2; road.position.set(0, GROUND + 0.05, 95); cityGroup.add(road);
-  const roadGlow = new THREE.Mesh(new THREE.PlaneGeometry(2400, 0.6), new THREE.MeshStandardMaterial({ color: 0x111111, emissive: 0xffb45a, emissiveIntensity: 0 }));
-  roadGlow.rotation.x = -Math.PI / 2; roadGlow.position.set(0, GROUND + 0.1, 95); cityGroup.add(roadGlow);
-  window.__roadGlow = roadGlow;
-  const via = new THREE.Mesh(new THREE.BoxGeometry(2400, 2.2, 9), mat.concrete); via.position.set(0, GROUND + 14, 95); cityGroup.add(via);
-  for (let x = -1200; x <= 1200; x += 40) { const p = new THREE.Mesh(new THREE.BoxGeometry(2, 13, 2), mat.concrete); p.position.set(x, GROUND + 6.5, 95); cityGroup.add(p); }
-  const train = new THREE.Group();
-  for (let i = 0; i < 4; i++) {
-    const car = new THREE.Mesh(new THREE.BoxGeometry(19, 3.6, 3.1), new THREE.MeshStandardMaterial({ color: 0xe9eef0, roughness: 0.4, emissive: 0x9fe0ff, emissiveIntensity: 0 }));
-    car.position.set(i * 20, 0, 0); train.add(car);
-    const stripe = new THREE.Mesh(new THREE.BoxGeometry(19.05, 0.5, 3.15), M(0x2f8f5a)); stripe.position.set(i * 20, -0.6, 0); train.add(stripe);
-  }
-  train.position.set(-600, GROUND + 17, 95); cityGroup.add(train);
-  window.__train = train;
+    const fresh = evs.filter(e => e.seq > lastSeq);
+    if (!fresh.length) return;
+    if (demoOn) { stopDemo(); liveJob = fresh[0].job; restoreLive(); }
+    fresh.forEach(e => {
+      lastSeq = Math.max(lastSeq, e.seq); liveEvents.push(e);
+      if (e.job !== liveJob) { liveJob = e.job; flush(); resetBoard(); clearFeed(); }
+      header(); enqueue(e);
+    });
+    if (liveEvents.length > 400) liveEvents = liveEvents.slice(-300);
+  }, () => { clearTimeout(t10); live = false; header(); if (!demoOn) startDemo(); });
 })();
-
-/* ---------- lighting ---------- */
-const hemi = new THREE.HemisphereLight(0xdfefff, 0x3a3f3a, 0.9); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff1dc, 1.6);
-sun.position.set(-40, 60, 30); sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 16, bottom: -16, near: 1, far: 160 });
-sun.shadow.bias = -0.0004; sun.target.position.set(0, 0, 0); scene.add(sun); scene.add(sun.target);
-const interior = [];
-[[-11, 0], [-14, -8.7], [-14, 8.7], [-1.5, -8.7], [-1.5, 0], [1.5, 6.5], [15.5, -7.5], [15.5, 1.5], [15.5, 9]].forEach(([x, z]) => {
-  const p = new THREE.PointLight(0xffe4c0, 0.35, 12, 2); p.position.set(x, 2.9, z); scene.add(p); interior.push(p);
-});
-
-function setMode(mode) {
-  const night = mode === "night";
-  scene.background = new THREE.Color(night ? 0x0a1322 : 0xb9d2e3);
-  scene.fog = new THREE.Fog(night ? 0x0a1322 : 0xb9d2e3, 140, night ? 700 : 900);
-  hemi.intensity = night ? 0.22 : 0.85;
-  hemi.color.set(night ? 0x7d8fb3 : 0xdfefff);
-  sun.intensity = night ? 0.18 : 1.5;
-  sun.color.set(night ? 0x9fb4ff : 0xfff1dc);
-  interior.forEach(p => p.intensity = night ? 1.0 : 0.3);
-  towerMat.emissiveIntensity = towerMat2.emissiveIntensity = night ? 1.0 : 0;
-  mat.led.emissiveIntensity = night ? 2.2 : 1.1;
-  mat.ledWarm.emissiveIntensity = night ? 1.6 : 0.7;
-  mat.ledViolet.emissiveIntensity = night ? 2.0 : 1.0;
-  aiLight.intensity = night ? 2.4 : 1.0;
-  screenMats.forEach(s => s.emissiveIntensity = night ? 1.0 : 0.75);
-  if (window.__roadGlow) window.__roadGlow.material.emissiveIntensity = night ? 2.5 : 0;
-  if (window.__train) window.__train.children.forEach(c => { if (c.material.emissive) c.material.emissiveIntensity = night ? 0.35 : 0; });
-  renderer.toneMappingExposure = night ? 1.15 : 1.0;
-  document.getElementById("b-day").setAttribute("aria-pressed", String(!night));
-  document.getElementById("b-night").setAttribute("aria-pressed", String(night));
-}
-const bkkHour = new Date(Date.now() + 7 * 3600e3).getUTCHours();
-setMode(bkkHour >= 6 && bkkHour < 18 ? "day" : "night");
-
-/* ---------- walker: the work hand-off ---------- */
-const walker = person(scene, -3.5, 5.6, 0, 0xf2f4f5, false);
-const folder = box(0.3, 0.04, 0.22, mat.ledWarm, 0.22, 1.05, -0.12, walker);
-const walkerLbl = label("", 0, 2.05, 0, "walker", null, walker);
-const LEGS = [
-  { pts: [[-3.5, 5.6], [-1.0, 5.6], [-1.0, -1.0], [-1.5, -1.0]], text: "STR ส่งงานให้หัวหน้าตรวจ" },
-  { pts: [[-1.5, -1.0], [7.0, -1.4]], text: "หัวหน้าสรุปส่งมอบให้เลขา" },
-  { pts: [[7.0, -1.4], [10.0, -4.5], [12.2, -4.5], [15.0, -6.6]], text: "เลขารายงานพี่โสภณ" },
-  { pts: [[15.0, -6.6], [12.2, -4.5], [10.0, -4.5], [7.0, -1.0], [-1.0, -1.0], [-1.0, 5.6], [-3.5, 5.6]], text: "กลับโต๊ะ รองานถัดไป" },
-];
-let leg = 0, seg = 0, segT = 0, pause = 1.2, walking = true;
-function setLeg(i) { leg = i; seg = 0; segT = 0; pause = 1.4; walkerLbl.el.textContent = LEGS[i].text; tickerText.textContent = LEGS[i].text; }
-setLeg(0);
-function stepWalker(dt) {
-  if (!walking) return;
-  if (pause > 0) { pause -= dt; return; }
-  const P = LEGS[leg].pts;
-  const a = P[seg], b = P[seg + 1];
-  const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 0.001;
-  segT += dt * 1.5 / len;
-  const t = Math.min(segT, 1);
-  walker.position.set(a[0] + (b[0] - a[0]) * t, Math.abs(Math.sin(segT * len * 3.2)) * 0.04, a[1] + (b[1] - a[1]) * t);
-  walker.rotation.y = Math.atan2(-(b[0] - a[0]), -(b[1] - a[1])) + Math.PI;
-  if (segT >= 1) { seg++; segT = 0; if (seg >= P.length - 1) setLeg((leg + 1) % LEGS.length); }
-}
-
-/* ---------- camera moves ---------- */
-const VIEWS = {
-  overview: { pos: [30, 30, 34], tgt: [0, 0.5, 0] },
-  city: { pos: [15.2, 1.65, -5.2], tgt: [-25, 6, -120] },
-};
-let fly = null;
-function flyTo(pos, tgt) {
-  const to = { pos: new THREE.Vector3(...pos), tgt: new THREE.Vector3(...tgt) };
-  if (reduceMotion) { camera.position.copy(to.pos); controls.target.copy(to.tgt); return; }
-  fly = { from: { pos: camera.position.clone(), tgt: controls.target.clone() }, to, t: 0 };
-}
-controls.addEventListener("start", () => { fly = null; });
-
-const listEl = document.getElementById("zoneList");
-const detailEl = document.getElementById("detail");
-ZONES.forEach(z => {
-  const li = document.createElement("li");
-  li.innerHTML = `<button type="button" id="z-${z.id}"><span>${z.name}</span><span class="a">${z.area.toFixed(0)} ตร.ม.</span></button>`;
-  li.firstChild.addEventListener("click", () => focusZone(z.id));
-  listEl.appendChild(li);
-});
-function showDetail(z) {
-  detailEl.innerHTML = z
-    ? `<span class="code">${z.who}</span><h2>${z.name}</h2><p>${z.desc}</p><ul>${z.items.map(i => `<li>${i}</li>`).join("")}</ul>`
-    : `<span class="code">ชั้น 38 · 40 × 24 ม.</span><h2>ภาพรวมออฟฟิศ</h2><p>พื้นปูนขัดมัน ระแนงไม้ ผนังกระจกจากพื้นถึงฝ้า ไฟ LED เส้นสีเขียวน้ำทะเลแบบยุค AI และต้นไม้ทั่วชั้น เลือกโซนจากรายการหรือแตะป้ายบนโมเดล</p>`;
-  document.querySelectorAll("#zoneList button").forEach(b => b.setAttribute("aria-current", String(!!z && b.id === "z-" + z.id)));
-}
-function focusZone(id) {
-  const z = ZONES.find(q => q.id === id); if (!z) return;
-  const span = Math.max(z.r[1] - z.r[0], z.r[3] - z.r[2]);
-  const k = 0.75 + span * 0.07;
-  flyTo([z.c[0] + 5 * k, 6.5 * k, z.c[1] + 7 * k], [z.c[0], 0.8, z.c[1]]);
-  showDetail(z);
-}
-showDetail(null);
-
-document.getElementById("b-overview").addEventListener("click", () => { flyTo(VIEWS.overview.pos, VIEWS.overview.tgt); showDetail(null); });
-document.getElementById("b-city").addEventListener("click", () => {
-  flyTo(VIEWS.city.pos, VIEWS.city.tgt);
-  showDetail({ id: "city", name: "วิวสุขุมวิทจากห้อง CEO", who: "ชั้น 38 · สูง 150 ม.", desc: "มองจากโต๊ะพี่โสภณออกไปทางทิศเหนือ เห็นตึกสูงย่านสุขุมวิท ถนนสุขุมวิท และรถไฟฟ้า BTS ด้านล่าง", items: ["ลากเพื่อหันมองรอบตัว", "สลับกลางคืนเพื่อดูไฟเมือง"] });
-});
-document.getElementById("b-day").addEventListener("click", () => setMode("day"));
-document.getElementById("b-night").addEventListener("click", () => setMode("night"));
-document.getElementById("b-labels").addEventListener("click", e => {
-  const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
-  e.currentTarget.setAttribute("aria-pressed", String(on)); document.body.classList.toggle("no-labels", !on);
-});
-document.getElementById("b-walk").addEventListener("click", e => {
-  walking = e.currentTarget.getAttribute("aria-pressed") !== "true";
-  e.currentTarget.setAttribute("aria-pressed", String(walking));
-  walker.visible = walking; tickerText.textContent = walking ? LEGS[leg].text : "หยุดการเดินส่งงานไว้";
-});
-const dir = document.getElementById("dir"), dirToggle = document.getElementById("dirToggle");
-dirToggle.addEventListener("click", () => {
-  const c = dir.classList.toggle("collapsed");
-  dirToggle.textContent = c ? "แสดงโซน" : "ซ่อน"; dirToggle.setAttribute("aria-expanded", String(!c));
-});
-if (window.matchMedia("(max-width: 760px)").matches) { dir.classList.add("collapsed"); dirToggle.textContent = "แสดงโซน"; dirToggle.setAttribute("aria-expanded", "false"); camera.position.set(34, 40, 46); }
-
-/* ---------- loop ---------- */
-function resize() {
-  const w = stage.clientWidth, h = stage.clientHeight;
-  renderer.setSize(w, h); labelRenderer.setSize(w, h);
-  camera.aspect = w / h; camera.updateProjectionMatrix();
-}
-window.addEventListener("resize", resize);
-const clock = new THREE.Clock();
-let elapsed = 0;
-function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
-  if (fly) {
-    fly.t = Math.min(1, fly.t + dt / 1.3);
-    const e = fly.t < 0.5 ? 4 * fly.t ** 3 : 1 - Math.pow(-2 * fly.t + 2, 3) / 2;
-    camera.position.lerpVectors(fly.from.pos, fly.to.pos, e);
-    controls.target.lerpVectors(fly.from.tgt, fly.to.tgt, e);
-    if (fly.t >= 1) fly = null;
-  }
-  if (!reduceMotion) {
-    rings.forEach((r, i) => { r.rotation.z += dt * (0.3 + i * 0.2); r.rotation.x += dt * 0.1 * (i - 1); });
-    orb.scale.setScalar(1 + Math.sin(elapsed * 2) * 0.06);
-    avatars.forEach(a => { a.head.rotation.y = Math.sin(elapsed * 0.6 + a.phase) * 0.35; });
-    if (window.__train) { window.__train.position.x += dt * 22; if (window.__train.position.x > 700) window.__train.position.x = -700; }
-    stepWalker(dt);
-  }
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
-  requestAnimationFrame(frame);
-}
-frame();
 })();
 </script>
+
 </body>
 </html>

@@ -56,11 +56,16 @@ flowchart TD
 
 การตั้งเวลาใช้ระบบของ Facebook เอง (ล่วงหน้า 10 นาที–30 วัน) จึงโพสต์ตรงเวลาแม้ปิดเครื่อง ถ้าแก้แคปชัน/ภาพ/เวลาหลังอนุมัติ สคริปต์จะไม่โพสต์จนกว่าพี่โสภณอนุมัติใหม่
 
-## ออฟฟิศจำลอง 3 มิติ COST NINE
+## ออฟฟิศ COST NINE
 
-`office/index.html` คือออฟฟิศจำลองของบริษัท คอสท์ไนน์ จำกัด ชั้น 38 ตึกสูงใจกลางสุขุมวิท (960 ตร.ม.) มีห้อง CEO, โต๊ะเลขาและหัวหน้าทีม, โซนทีม QS 6 ฝ่าย, ห้องประชุมแก้ปัญหา, สตูดิโอ Content, แล็บทีมเขียนโปรแกรม, ห้องอบรม, ล็อบบี้ และแพนทรี พร้อมวิวสุขุมวิท โหมดกลางวัน/กลางคืน และภาพเคลื่อนไหวการเดินส่งงานตามสายงาน
+| ไฟล์ | คืออะไร |
+|---|---|
+| `office/index.html` | **ออฟฟิศสด** ภาพเหมือนจริงของทีมกำลังรับคำสั่ง แจกงาน ส่งงาน แก้งาน ประชุม และรายงานพี่โสภณ พร้อมกระดานสถานะ 13 ตำแหน่ง ในไฟล์นี้เล่น "ตัวอย่างจำลอง" ส่วนเวอร์ชันบน claude.ai รับเหตุการณ์จริงจากเลขา (ดู `skills/sophon-secretary/references/live-office.md`) |
+| `office/gallery.html` | ภาพ Render เหมือนจริง 9 มุมของออฟฟิศชั้น 38 ใจกลางสุขุมวิท |
+| `office/3d.html` | ผังออฟฟิศ 3 มิติ หมุนดูได้ พร้อมวิวสุขุมวิทและโหมดกลางวัน/กลางคืน |
+| `office/img/` | ภาพทั้งหมด (สร้างด้วย AI ไม่ใช่ภาพถ่ายบุคคลหรือสถานที่จริง) |
 
-เปิดไฟล์ด้วยเบราว์เซอร์ได้เลย (ต้องต่ออินเทอร์เน็ตเพื่อโหลด three.js และฟอนต์) หรือเปิดผ่าน GitHub Pages:
+เปิดไฟล์ด้วยเบราว์เซอร์ได้เลย หรือผ่าน GitHub Pages:
 https://sophoncost9.github.io/bookish-octo-guacamole/
 
 ตั้งค่า GitHub Pages ครั้งเดียว: Settings → Pages → Build and deployment → Source เลือก **GitHub Actions** จากนั้นทุกครั้งที่แก้ไฟล์ใน `office/` บน main เว็บจะอัปเดตเองผ่าน workflow `.github/workflows/pages.yml` (สั่งรันเองได้ที่แท็บ Actions)
@@ -90,7 +95,7 @@ https://sophoncost9.github.io/bookish-octo-guacamole/
 ## โครงสร้างไฟล์
 
 ```
-office/index.html               ออฟฟิศจำลอง 3 มิติ COST NINE
+office/                         ออฟฟิศสดภาพเหมือนจริง, แกลเลอรี, ผัง 3 มิติ
 .claude-plugin/plugin.json, marketplace.json
 agents/                         หัวหน้า + 6 ฝ่าย QS + Content + อบรม + โปรแกรม (เว็บ, SketchUp)
 skills/sophon-secretary/
@@ -100,6 +105,7 @@ skills/sophon-secretary/
   references/meeting-protocol.md ระเบียบการประชุมแก้ปัญหา
   references/team-standards.md  มาตรฐานหน่วย เผื่อ อัตราส่วนตรวจ ราคา
   references/direct-teams.md    ขั้นตอนทีม Content / อบรม / โปรแกรม
+  references/live-office.md     ส่งเหตุการณ์งานเข้าออฟฟิศสด
   references/content-and-facebook.md  โครงไฟล์โพสต์ แนวทางแบรนด์ checklist การอนุมัติ
   scripts/office.py             เปิดแฟ้มงาน บันทึกเหตุการณ์ สรุปสถานะ
   scripts/fb_post.py            ตรวจ/บันทึกอนุมัติ/โพสต์ Facebook Page (โพสต์ไม่ได้ถ้าไม่มีอนุมัติ)

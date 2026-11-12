@@ -5,6 +5,11 @@
   python office.py init   JOB "ชื่องาน"
   python office.py log    JOB <ฝ่าย> <สถานะ> "ข้อความ"
   python office.py status JOB
+  python office.py ev     JOB <ชนิด> [--team X | --teams A,B] [--to X] [--pct N] [--with A,B] [--title T] "ข้อความ"
+  python office.py outbox JOB        # พิมพ์ writes สำหรับ ArtifactData batch แล้วล้างคิว
+ชนิดเหตุการณ์ออฟฟิศสด: order, plan, assign, working, deliver, review_pass, review_fail, issue,
+  meeting_start, meeting_say, meeting_end, handover, report, approval_request, approved, rejected,
+  published, done, note
 สถานะที่ใช้: assigned, working, delivered, review_pass, review_fail, issue, meeting, resolved, reported,
            awaiting_approval, approved, published, rejected
 """
@@ -109,6 +114,66 @@ def status(job: pathlib.Path):
         print(f"  {r['t']} [{TEAMS[r['team']]}] {STATUS_TH[r['status']]} — {r['msg']}")
 
 
+EVENT_TYPES = {"order", "plan", "assign", "working", "deliver", "review_pass", "review_fail", "issue",
+               "meeting_start", "meeting_say", "meeting_end", "handover", "report", "approval_request",
+               "approved", "rejected", "published", "done", "note"}
+CODES = {"CEO", "SEC", "HEAD", "STR", "ARC", "MEP", "PUR", "PLN", "BOQ", "CNT", "TRN", "DEV", "WEB", "SKP"}
+
+
+def _codes(s):
+    out = [c.strip().upper() for c in s.split(",") if c.strip()]
+    bad = [c for c in out if c not in CODES]
+    if bad:
+        sys.exit(f"ไม่รู้จักรหัส {', '.join(bad)} (ใช้ได้: {', '.join(sorted(CODES))})")
+    return out
+
+
+def ev(job: pathlib.Path, args):
+    """เพิ่มเหตุการณ์หนึ่งรายการเข้าคิวส่งออฟฟิศสด (JOB/office_outbox.jsonl)"""
+    import argparse
+    ap = argparse.ArgumentParser(prog="office.py ev")
+    ap.add_argument("type")
+    ap.add_argument("msg")
+    ap.add_argument("--team"); ap.add_argument("--teams"); ap.add_argument("--to")
+    ap.add_argument("--pct", type=float); ap.add_argument("--with", dest="with_"); ap.add_argument("--title")
+    a = ap.parse_args(args)
+    if a.type not in EVENT_TYPES:
+        sys.exit(f"ไม่รู้จักชนิด {a.type} (ใช้ได้: {', '.join(sorted(EVENT_TYPES))})")
+    import time
+    seq = int(time.time() * 1000)
+    seq_file = job / ".office_seq"
+    last = int(seq_file.read_text()) if seq_file.exists() else 0
+    seq = max(seq, last + 1)
+    seq_file.write_text(str(seq))
+    jid = job.resolve().name
+    doc = {"seq": seq, "t": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+           "job": jid, "type": a.type, "msg": a.msg[:300]}
+    if a.team: doc["team"] = _codes(a.team)[0]
+    if a.teams: doc["teams"] = _codes(a.teams)
+    if a.to: doc["to"] = _codes(a.to)[0]
+    if a.pct is not None: doc["pct"] = max(0, min(100, a.pct))
+    if a.with_: doc["with"] = _codes(a.with_)
+    if a.title: doc["title"] = a.title[:120]
+    write = {"op": "set", "collection": "events", "doc_id": f"{jid}-{seq}", "data": doc}
+    with open(job / "office_outbox.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(write, ensure_ascii=False) + "\n")
+    print(json.dumps(write, ensure_ascii=False))
+
+
+def outbox(job: pathlib.Path):
+    """พิมพ์ writes ที่ค้างในคิว (สูงสุด 50) เป็น JSON array สำหรับ ArtifactData action=batch แล้วล้างส่วนที่พิมพ์"""
+    path = job / "office_outbox.jsonl"
+    if not path.exists() or not path.read_text(encoding="utf-8").strip():
+        print("[]")
+        return
+    lines = [l for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    take, rest = lines[:50], lines[50:]
+    print(json.dumps([json.loads(l) for l in take], ensure_ascii=False, indent=1))
+    path.write_text("".join(l + "\n" for l in rest), encoding="utf-8")
+    if rest:
+        print(f"# ยังเหลือ {len(rest)} รายการ เรียก outbox อีกครั้ง", file=sys.stderr)
+
+
 def main(argv):
     if len(argv) < 3:
         sys.exit(__doc__)
@@ -119,6 +184,10 @@ def main(argv):
         log(job, argv[3], argv[4], " ".join(argv[5:]))
     elif cmd == "status":
         status(job)
+    elif cmd == "ev" and len(argv) >= 5:
+        ev(job, argv[3:])
+    elif cmd == "outbox":
+        outbox(job)
     else:
         sys.exit(__doc__)
 
